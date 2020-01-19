@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+import static com.tchvu3.capvoicerecorder.Messages.ALREADY_RECORDING;
 import static com.tchvu3.capvoicerecorder.Messages.CANNOT_RECORD_ON_THIS_PHONE;
 import static com.tchvu3.capvoicerecorder.Messages.FAILED_TO_FETCH_RECORDING;
 import static com.tchvu3.capvoicerecorder.Messages.FAILED_TO_RECORD;
@@ -67,6 +68,11 @@ public class VoiceRecorder extends Plugin {
             return;
         }
 
+        if (mediaRecorder != null) {
+            call.reject(ALREADY_RECORDING);
+            return;
+        }
+
         try {
             mediaRecorder = new CustomMediaRecorder(getContext());
             mediaRecorder.startRecording();
@@ -86,9 +92,7 @@ public class VoiceRecorder extends Plugin {
         try {
             mediaRecorder.stopRecording();
             File recordedFile = mediaRecorder.getOutputFile();
-            JSObject response = new JSObject();
-            response.put("data", readRecordedFileAsBase64(recordedFile));
-            call.resolve(response);
+            call.resolve(ResponseGenerator.dataResponse(readRecordedFileAsBase64(recordedFile)));
         } catch (Exception exp) {
             call.reject(FAILED_TO_FETCH_RECORDING, exp);
         } finally {

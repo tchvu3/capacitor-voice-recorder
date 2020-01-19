@@ -1,0 +1,14 @@
+//
+//  Created by Avihu Harush on 18/01/2020
+//
+
+import Foundation
+
+struct Messages {
+    static var MISSING_PERMISSION = "MISSING_PERMISSION"
+    static var CANNOT_RECORD_ON_THIS_PHONE = "CANNOT_RECORD_ON_THIS_PHONE"
+    static var FAILED_TO_RECORD = "FAILED_TO_RECORD"
+    static var RECORDING_HAS_NOT_STARTED = "RECORDING_HAS_NOT_STARTED"
+    static var FAILED_TO_FETCH_RECORDING = "FAILED_TO_FETCH_RECORDING"
+    static var ALREADY_RECORDING = "ALREADY_RECORDING"
+}

@@ -29,7 +29,9 @@ Capacitor plugin for simple voice recording
   the promise will reject with the message "MISSING_PERMISSION".
   if the phone is unable to record then the promise will reject
   with the message "CANNOT_VOICE_RECORD_ON_THIS_PHONE".
-  if the previous 2 conditions are met then the recording will start
+  if there's a recording already running then the promise will reject with "ALREADY_RECORDING"
+  if the previous 3 conditions are met then the recording will start.
+  NOTE: in case of unknown error the promise will reject with "FAILED_TO_RECORD"
 ---
 * stopRecording - will stop the recording that previously started. if the function startRecording()
   has not been called before this function then the promise will reject with the message "RECORDING_HAS_NOT_STARTED".
@@ -60,14 +62,15 @@ VoiceRecorder.hasAudioRecordingPermission.then(result => console.log(result.valu
 * In case of success the promise will resolve with {"value": true}
 * (in this example "true" will be printed out)
 * in case of an error the promise will reject with one of the following messages:
-* "MISSING_PERMISSION", "CANNOT_RECORD_ON_THIS_PHONE" or "FAILED_TO_RECORD"
+* "MISSING_PERMISSION", "ALREADY_RECORDING", "CANNOT_RECORD_ON_THIS_PHONE" or "FAILED_TO_RECORD"
 */
 VoiceRecorder.startRecording()
 .then(result => console.log(result.value))
 .catch(error => console.log(error))
 
 /**
-* In case of success the promise will resolve with {"data": base64FileString}, the file will be in 3gp format.
+* In case of success the promise will resolve with {"data": base64FileString},
+* the file will be in 3gp format for android and m4a for ios.
 * in case of an error the promise will reject with one of the following messages:
 * "RECORDING_HAS_NOT_STARTED" or "FAILED_TO_FETCH_RECORDING"
 */
@@ -76,3 +79,7 @@ VoiceRecorder.stopRecording()
 .catch(error => console.log(error))
 
 ```
+
+## ios note
+make sure to include the NSMicrophoneUsageDescription key
+and a corresponding purpose string in your app’s Info.plist

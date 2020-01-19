@@ -2,6 +2,7 @@ package com.tchvu3.capvoicerecorder;
 
 import com.getcapacitor.JSObject;
 
+
 public abstract class ResponseGenerator {
 
     private static final String RESPONSE_KEY = "value";
@@ -22,4 +23,9 @@ public abstract class ResponseGenerator {
         return success;
     }
 
+    public static JSObject dataResponse(Object data) {
+        JSObject success = new JSObject();
+        success.put(RESPONSE_KEY, data);
+        return success;
+    }
 }

@@ -1,26 +1,48 @@
 //
-//  CustomMediaRecorder.swift
-//  Plugin
-//
-//  Created by Avihu Harush on 17/01/2020.
-//  Copyright © 2020 Max Lynch. All rights reserved.
+//  Created by Avihu Harush on 17/01/2020
 //
 
 import Foundation
 import AVFoundation
 
 class CustomMediaRecorder {
-    var recordingSession: AVAudioSession!
-    var audioRecorder: AVAudioRecorder!
     
-    init() {
+    private var recordingSession: AVAudioSession!
+    private var audioRecorder: AVAudioRecorder!
+    private var audioFilePath: URL!
+    
+    private let settings = [
+        AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
+        AVSampleRateKey: 44100,
+        AVNumberOfChannelsKey: 1,
+        AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue
+    ]
+    
+    private func getDirectoryToSaveAudioFile() -> URL {
+        return URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
+    }
+    
+    public func startRecording() {
         do {
-            self.recordingSession = AVAudioSession.sharedInstance()
-//            try self.recordingSession.setCategory(.playAndRecord, mode: .default)
-            try self.recordingSession.setActive(true)
-        } catch {
-            
-        }
+            recordingSession = AVAudioSession.sharedInstance()
+            try recordingSession.setActive(true)
+            audioFilePath = getDirectoryToSaveAudioFile().appendingPathComponent("\(UUID().uuidString).m4a")
+            audioRecorder = try AVAudioRecorder(url: audioFilePath, settings: settings)
+            audioRecorder.record()
+        } catch {}
+    }
+    
+    public func stopRecording() {
+        do {
+            audioRecorder.stop()
+            try recordingSession.setActive(false)
+            audioRecorder = nil
+            recordingSession = nil
+        } catch {}
+    }
+    
+    public func getOutputFile() -> URL {
+        return audioFilePath
     }
     
 }
