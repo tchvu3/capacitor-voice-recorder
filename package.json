@@ -1,6 +1,6 @@
 {
   "name": "capacitor-voice-recorder",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Capacitor plugin for voice recording",
   "main": "dist/esm/index.js",
   "types": "dist/esm/index.d.ts",
@@ -8,7 +8,8 @@
     "build": "npm run clean && tsc",
     "clean": "rm -rf ./dist",
     "watch": "tsc --watch",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "publish": "npm publish"
   },
   "author": "Avihu Harush",
   "license": "MIT",

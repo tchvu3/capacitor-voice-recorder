@@ -44,6 +44,8 @@ Capacitor plugin for simple voice recording
 ```
 
 import { Plugins } from "@capacitor/core"
+
+// without types
 const { VoiceRecorder } = Plugins
 
 // will print true / false based on the device ability to record
