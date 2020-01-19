@@ -44,6 +44,7 @@ public class VoiceRecorder: CAPPlugin {
         }
         
         customMediaRecorder!.startRecording()
+        call.resolve(ResponseGenerator.successResponse())
     }
     
     @objc func stopRecording(_ call: CAPPluginCall) {

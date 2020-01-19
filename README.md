@@ -69,13 +69,13 @@ VoiceRecorder.startRecording()
 .catch(error => console.log(error))
 
 /**
-* In case of success the promise will resolve with {"data": base64FileString},
-* the file will be in 3gp format for android and m4a for ios.
+* In case of success the promise will resolve with {"value": base64FileString},
+* the file will be 3gp for android and m4a for ios.
 * in case of an error the promise will reject with one of the following messages:
 * "RECORDING_HAS_NOT_STARTED" or "FAILED_TO_FETCH_RECORDING"
 */
 VoiceRecorder.stopRecording()
-.then(result => console.log(result.data))
+.then(result => console.log(result.value))
 .catch(error => console.log(error))
 
 ```
