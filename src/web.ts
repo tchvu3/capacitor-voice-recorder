@@ -9,11 +9,15 @@ export class VoiceRecorderWeb extends WebPlugin implements VoiceRecorderPlugin {
     })
   }
 
-  askForPermission (): Promise<GenericResponse> {
+  canDeviceVoiceRecord (): Promise<GenericResponse> {
     return undefined
   }
 
-  havePermission (): Promise<GenericResponse> {
+  hasAudioRecordingPermission (): Promise<GenericResponse> {
+    return undefined
+  }
+
+  requestAudioRecordingPermission (): Promise<GenericResponse> {
     return undefined
   }
 
