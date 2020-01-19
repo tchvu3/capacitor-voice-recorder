@@ -61,13 +61,12 @@ public class VoiceRecorder: CAPPlugin {
             call.reject(Messages.FAILED_TO_FETCH_RECORDING)
             return
         }
-        
-        let base64AudioFile = readFileAsBase64(audioFileUrl)
+        let recordData = RecordData(recordDataBase64: readFileAsBase64(audioFileUrl), msDuration: getMsDurationOfAudioFile(audioFileUrl))
         customMediaRecorder = nil
-        if base64AudioFile == nil {
+        if recordData.recordDataBase64 == nil || recordData.msDuration < 0 {
             call.reject(Messages.FAILED_TO_FETCH_RECORDING)
         } else {
-            call.resolve(ResponseGenerator.dataResponse(base64AudioFile!))
+            call.resolve(ResponseGenerator.dataResponse(recordData))
         }
     }
     
@@ -87,6 +86,13 @@ public class VoiceRecorder: CAPPlugin {
         } catch {}
         
         return nil
+    }
+    
+    func getMsDurationOfAudioFile(_ filePath: URL?) -> Int {
+        if filePath == nil {
+            return -1
+        }
+        return Int(CMTimeGetSeconds(AVURLAsset(url: filePath!).duration) * 1000)
     }
     
 }

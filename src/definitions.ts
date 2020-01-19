@@ -7,7 +7,10 @@ declare module '@capacitor/core' {
 export type Base64String = string
 
 export interface RecordingData {
-  value: Base64String
+  value: {
+    recordDataBase64: Base64String
+    msDuration: number
+  }
 }
 
 export interface GenericResponse {

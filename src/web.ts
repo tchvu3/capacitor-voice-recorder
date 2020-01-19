@@ -10,23 +10,23 @@ export class VoiceRecorderWeb extends WebPlugin implements VoiceRecorderPlugin {
   }
 
   canDeviceVoiceRecord (): Promise<GenericResponse> {
-    return undefined
+    return Promise.reject(new Error('VoiceRecorder does not have web implementation'))
   }
 
   hasAudioRecordingPermission (): Promise<GenericResponse> {
-    return undefined
+    return Promise.reject(new Error('VoiceRecorder does not have web implementation'))
   }
 
   requestAudioRecordingPermission (): Promise<GenericResponse> {
-    return undefined
+    return Promise.reject(new Error('VoiceRecorder does not have web implementation'))
   }
 
   startRecording (): Promise<GenericResponse> {
-    return undefined
+    return Promise.reject(new Error('VoiceRecorder does not have web implementation'))
   }
 
   stopRecording (): Promise<RecordingData> {
-    return undefined
+    return Promise.reject(new Error('VoiceRecorder does not have web implementation'))
   }
 
 }

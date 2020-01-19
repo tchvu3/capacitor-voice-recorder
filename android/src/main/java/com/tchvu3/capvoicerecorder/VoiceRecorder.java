@@ -4,6 +4,7 @@ package com.tchvu3.capvoicerecorder;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.MediaPlayer;
 import android.util.Base64;
 
 import com.getcapacitor.JSObject;
@@ -11,6 +12,7 @@ import com.getcapacitor.NativePlugin;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginMethod;
+import com.tchvu3.capacitorvoicerecorder.R;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -92,7 +94,11 @@ public class VoiceRecorder extends Plugin {
         try {
             mediaRecorder.stopRecording();
             File recordedFile = mediaRecorder.getOutputFile();
-            call.resolve(ResponseGenerator.dataResponse(readRecordedFileAsBase64(recordedFile)));
+            RecordData recordData = new RecordData(readRecordedFileAsBase64(recordedFile), getMsDurationOfAudioFile(recordedFile.getAbsolutePath()));
+            if (recordData.getRecordDataBase64() == null || recordData.getMsDuration() < 0)
+                call.reject(FAILED_TO_FETCH_RECORDING);
+            else
+                call.resolve(ResponseGenerator.dataResponse(recordData));
         } catch (Exception exp) {
             call.reject(FAILED_TO_FETCH_RECORDING, exp);
         } finally {
@@ -100,7 +106,6 @@ public class VoiceRecorder extends Plugin {
             mediaRecorder = null;
         }
     }
-
 
     @Override
     protected void handleRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
@@ -133,6 +138,17 @@ public class VoiceRecorder extends Plugin {
             return null;
         }
         return Base64.encodeToString(bArray, Base64.DEFAULT);
+    }
+
+    private int getMsDurationOfAudioFile(String recordedFilePath) {
+        try {
+            MediaPlayer mp = new MediaPlayer();
+            mp.setDataSource(recordedFilePath);
+            mp.prepare();
+            return mp.getDuration();
+        } catch (Exception ignore) {
+            return -1;
+        }
     }
 
 }

@@ -35,7 +35,7 @@ Capacitor plugin for simple voice recording
 ---
 * stopRecording - will stop the recording that previously started. if the function startRecording()
   has not been called before this function then the promise will reject with the message "RECORDING_HAS_NOT_STARTED".
-  in a case of success the recording will be returned to the user in base64 string
+  in a case of success, the recording will be returned to the user in base64 string and duration in milliseconds
 
 
 ## Usage
@@ -69,7 +69,7 @@ VoiceRecorder.startRecording()
 .catch(error => console.log(error))
 
 /**
-* In case of success the promise will resolve with {"value": base64FileString},
+* In case of success the promise will resolve with {"value": { recordDataBase64: string, msDuration: number }},
 * the file will be 3gp for android and m4a for ios.
 * in case of an error the promise will reject with one of the following messages:
 * "RECORDING_HAS_NOT_STARTED" or "FAILED_TO_FETCH_RECORDING"

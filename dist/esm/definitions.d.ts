@@ -3,14 +3,17 @@ declare module '@capacitor/core' {
         VoiceRecorder: VoiceRecorderPlugin;
     }
 }
+export declare type Base64String = string;
 export interface RecordingData {
+    value: Base64String;
 }
 export interface GenericResponse {
     value: boolean;
 }
 export interface VoiceRecorderPlugin {
-    havePermission(): Promise<GenericResponse>;
-    askForPermission(): Promise<GenericResponse>;
+    canDeviceVoiceRecord(): Promise<GenericResponse>;
+    requestAudioRecordingPermission(): Promise<GenericResponse>;
+    hasAudioRecordingPermission(): Promise<GenericResponse>;
     startRecording(): Promise<GenericResponse>;
     stopRecording(): Promise<RecordingData>;
 }

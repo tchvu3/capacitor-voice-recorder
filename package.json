@@ -1,6 +1,6 @@
 {
   "name": "capacitor-voice-recorder",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Capacitor plugin for voice recording",
   "main": "dist/esm/index.js",
   "types": "dist/esm/index.d.ts",
@@ -29,7 +29,13 @@
   "keywords": [
     "capacitor",
     "plugin",
-    "native"
+    "native",
+    "voice",
+    "audio",
+    "record",
+    "recorder",
+    "ios",
+    "android"
   ],
   "capacitor": {
     "ios": {
