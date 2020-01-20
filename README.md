@@ -77,7 +77,7 @@ VoiceRecorder.startRecording()
 /**
 * In case of success the promise will resolve with:
 * {"value": { recordDataBase64: string, msDuration: number, mimeType: string }},
-* the file will be 3gp for android and m4a for ios.
+* the file will be in *.acc format.
 * in case of an error the promise will reject with one of the following messages:
 * "RECORDING_HAS_NOT_STARTED" or "FAILED_TO_FETCH_RECORDING"
 */

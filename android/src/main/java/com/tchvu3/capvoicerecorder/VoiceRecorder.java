@@ -97,7 +97,7 @@ public class VoiceRecorder extends Plugin {
             RecordData recordData = new RecordData(
                     readRecordedFileAsBase64(recordedFile),
                     getMsDurationOfAudioFile(recordedFile.getAbsolutePath()),
-                    "video/3gpp"
+                    "audio/aac"
             );
             if (recordData.getRecordDataBase64() == null || recordData.getMsDuration() < 0)
                 call.reject(FAILED_TO_FETCH_RECORDING);
