@@ -1,5 +1,7 @@
 package com.tchvu3.capvoicerecorder;
 
+import com.getcapacitor.JSObject;
+
 import java.io.Serializable;
 
 public class RecordData implements Serializable {
@@ -29,5 +31,12 @@ public class RecordData implements Serializable {
 
     public void setMsDuration(int msDuration) {
         this.msDuration = msDuration;
+    }
+
+    public JSObject toJSObject() {
+        JSObject toReturn = new JSObject();
+        toReturn.put("recordDataBase64", recordDataBase64);
+        toReturn.put("msDuration", msDuration);
+        return toReturn;
     }
 }

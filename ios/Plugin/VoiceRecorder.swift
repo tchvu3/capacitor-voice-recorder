@@ -66,12 +66,12 @@ public class VoiceRecorder: CAPPlugin {
         if recordData.recordDataBase64 == nil || recordData.msDuration < 0 {
             call.reject(Messages.FAILED_TO_FETCH_RECORDING)
         } else {
-            call.resolve(ResponseGenerator.dataResponse(recordData))
+            call.resolve(ResponseGenerator.dataResponse(recordData.toDictionary()))
         }
     }
     
     func doesUserGaveAudioRecordingPermission() -> Bool {
-        return AVAudioSession.sharedInstance().recordPermission() == AVAudioSession.RecordPermission.granted
+        return AVAudioSession.sharedInstance().recordPermission == AVAudioSession.RecordPermission.granted
     }
     
     func readFileAsBase64(_ filePath: URL?) -> String? {

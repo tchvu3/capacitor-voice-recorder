@@ -45,20 +45,23 @@ Capacitor plugin for simple voice recording
 
 import { Plugins } from "@capacitor/core"
 
+// not mandatory, only for code completion
+import { RecordingData, GenericResponse } from 'capacitor-voice-recorder'
+
 // without types
 const { VoiceRecorder } = Plugins
 
 // will print true / false based on the device ability to record
-VoiceRecorder.canDeviceVoiceRecord().then(result => console.log(result.value))
+VoiceRecorder.canDeviceVoiceRecord().then((result: GenericResponse) => console.log(result.value))
 
 /** 
 * will prompt the user to give the required permission, after that
 * the function will print true / false based on the user response
 */
-VoiceRecorder.requestAudioRecordingPermission().then(result => console.log(result.value))
+VoiceRecorder.requestAudioRecordingPermission().then((result: GenericResponse) => console.log(result.value))
 
 // will print true / false based on the status of the recording permission
-VoiceRecorder.hasAudioRecordingPermission.then(result => console.log(result.value))
+VoiceRecorder.hasAudioRecordingPermission.then((result: GenericResponse) => console.log(result.value))
 
 /**
 * In case of success the promise will resolve with {"value": true}
@@ -67,7 +70,7 @@ VoiceRecorder.hasAudioRecordingPermission.then(result => console.log(result.valu
 * "MISSING_PERMISSION", "ALREADY_RECORDING", "CANNOT_RECORD_ON_THIS_PHONE" or "FAILED_TO_RECORD"
 */
 VoiceRecorder.startRecording()
-.then(result => console.log(result.value))
+.then((result: GenericResponse) => console.log(result.value))
 .catch(error => console.log(error))
 
 /**
@@ -77,7 +80,7 @@ VoiceRecorder.startRecording()
 * "RECORDING_HAS_NOT_STARTED" or "FAILED_TO_FETCH_RECORDING"
 */
 VoiceRecorder.stopRecording()
-.then(result => console.log(result.value))
+.then((result: RecordingData) => console.log(result.value))
 .catch(error => console.log(error))
 
 ```

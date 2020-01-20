@@ -98,7 +98,7 @@ public class VoiceRecorder extends Plugin {
             if (recordData.getRecordDataBase64() == null || recordData.getMsDuration() < 0)
                 call.reject(FAILED_TO_FETCH_RECORDING);
             else
-                call.resolve(ResponseGenerator.dataResponse(recordData));
+                call.resolve(ResponseGenerator.dataResponse(recordData.toJSObject()));
         } catch (Exception exp) {
             call.reject(FAILED_TO_FETCH_RECORDING, exp);
         } finally {
