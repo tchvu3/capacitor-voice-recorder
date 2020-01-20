@@ -54,14 +54,17 @@ public class CustomMediaRecorder {
     }
 
     public static boolean canPhoneCreateMediaRecorder(Context context) {
+        CustomMediaRecorder tempMediaRecorder = null;
         try {
-            CustomMediaRecorder tempMediaRecorder = new CustomMediaRecorder(context);
+            tempMediaRecorder = new CustomMediaRecorder(context);
             tempMediaRecorder.startRecording();
             tempMediaRecorder.stopRecording();
-            tempMediaRecorder.deleteOutputFile();
             return true;
         } catch (Exception exp) {
-            return false;
+            return exp.getMessage().startsWith("stop failed");
+        } finally {
+            if (tempMediaRecorder != null)
+                tempMediaRecorder.deleteOutputFile();
         }
     }
 }

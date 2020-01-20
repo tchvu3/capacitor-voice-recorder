@@ -5,9 +5,8 @@
       <change beforePath="$PROJECT_DIR$/.gradle/4.10.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/4.10.1/fileHashes/fileHashes.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/4.10.1/taskHistory/taskHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/4.10.1/taskHistory/taskHistory.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../dist/esm/definitions.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../dist/esm/definitions.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ios/Plugin.xcworkspace/xcuserdata/avihuharush.xcuserdatad/UserInterfaceState.xcuserstate" beforeDir="false" afterPath="$PROJECT_DIR$/../ios/Plugin.xcworkspace/xcuserdata/avihuharush.xcuserdatad/UserInterfaceState.xcuserstate" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ios/Plugin/VoiceRecorder.swift" beforeDir="false" afterPath="$PROJECT_DIR$/../ios/Plugin/VoiceRecorder.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android.iml" beforeDir="false" afterPath="$PROJECT_DIR$/android.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/tchvu3/capvoicerecorder/CustomMediaRecorder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/tchvu3/capvoicerecorder/CustomMediaRecorder.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -48,11 +47,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/tchvu3/capvoicerecorder/VoiceRecorder.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="497">
-              <caret line="112" lean-forward="true" selection-start-line="112" selection-end-line="112" />
+            <state relative-caret-position="-636">
+              <caret line="100" column="14" lean-forward="true" selection-start-line="100" selection-start-column="14" selection-end-line="100" selection-end-column="14" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -60,11 +59,15 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/tchvu3/capvoicerecorder/CustomMediaRecorder.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="551">
-              <caret line="33" column="64" selection-start-line="33" selection-start-column="64" selection-end-line="33" selection-end-column="67" />
+            <state relative-caret-position="466">
+              <caret line="70" selection-start-line="70" selection-end-line="70" />
+              <folding>
+                <element signature="e#1521#1522#0" expanded="true" />
+                <element signature="e#1563#1564#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -90,11 +93,11 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/main/java/com/tchvu3/capvoicerecorder/CustomMediaRecorder.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/tchvu3/capvoicerecorder/Messages.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/tchvu3/capvoicerecorder/ResponseGenerator.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/tchvu3/capvoicerecorder/RecordData.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/tchvu3/capvoicerecorder/VoiceRecorder.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/tchvu3/capvoicerecorder/CustomMediaRecorder.java" />
       </list>
     </option>
   </component>
@@ -109,8 +112,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="ProjectPane" />
-      <pane id="PackagesPane" />
       <pane id="AndroidView">
         <subPane>
           <expand>
@@ -122,6 +123,8 @@
           <select />
         </subPane>
       </pane>
+      <pane id="ProjectPane" />
+      <pane id="PackagesPane" />
       <pane id="Scope" />
     </panes>
   </component>
@@ -129,6 +132,7 @@
     <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="android.sdk.path" value="$USER_HOME$/Library/Android/sdk" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -209,10 +213,13 @@
     <entry file="file://$PROJECT_DIR$/build.gradle">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/tchvu3/capvoicerecorder/ResponseGenerator.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/tchvu3/capvoicerecorder/VoiceRecorder.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="171">
-          <caret line="9" column="14" selection-start-line="9" selection-start-column="14" selection-end-line="9" selection-end-column="14" />
+        <state relative-caret-position="-636">
+          <caret line="100" column="14" lean-forward="true" selection-start-line="100" selection-start-column="14" selection-end-line="100" selection-end-column="14" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -226,19 +233,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/tchvu3/capvoicerecorder/CustomMediaRecorder.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/tchvu3/capvoicerecorder/ResponseGenerator.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="551">
-          <caret line="33" column="64" selection-start-line="33" selection-start-column="64" selection-end-line="33" selection-end-column="67" />
+        <state relative-caret-position="171">
+          <caret line="9" column="14" selection-start-line="9" selection-start-column="14" selection-end-line="9" selection-end-column="14" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/tchvu3/capvoicerecorder/VoiceRecorder.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/tchvu3/capvoicerecorder/CustomMediaRecorder.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="497">
-          <caret line="112" lean-forward="true" selection-start-line="112" selection-end-line="112" />
+        <state relative-caret-position="466">
+          <caret line="70" selection-start-line="70" selection-end-line="70" />
           <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="e#1521#1522#0" expanded="true" />
+            <element signature="e#1563#1564#0" expanded="true" />
           </folding>
         </state>
       </provider>
