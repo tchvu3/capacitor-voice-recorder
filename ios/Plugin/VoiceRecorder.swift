@@ -61,7 +61,11 @@ public class VoiceRecorder: CAPPlugin {
             call.reject(Messages.FAILED_TO_FETCH_RECORDING)
             return
         }
-        let recordData = RecordData(recordDataBase64: readFileAsBase64(audioFileUrl), msDuration: getMsDurationOfAudioFile(audioFileUrl))
+        let recordData = RecordData(
+            recordDataBase64: readFileAsBase64(audioFileUrl),
+            msDuration: getMsDurationOfAudioFile(audioFileUrl),
+            mimeType: "audio/m4a"
+        )
         customMediaRecorder = nil
         if recordData.recordDataBase64 == nil || recordData.msDuration < 0 {
             call.reject(Messages.FAILED_TO_FETCH_RECORDING)

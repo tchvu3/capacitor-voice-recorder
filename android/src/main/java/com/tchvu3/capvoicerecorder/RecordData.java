@@ -7,14 +7,16 @@ import java.io.Serializable;
 public class RecordData implements Serializable {
 
     private String recordDataBase64;
+    private String mimeType;
     private int msDuration;
 
     public RecordData() {
     }
 
-    public RecordData(String recordDataBase64, int msDuration) {
+    public RecordData(String recordDataBase64, int msDuration, String mimeType) {
         this.recordDataBase64 = recordDataBase64;
         this.msDuration = msDuration;
+        this.mimeType = mimeType;
     }
 
     public String getRecordDataBase64() {
@@ -33,10 +35,19 @@ public class RecordData implements Serializable {
         this.msDuration = msDuration;
     }
 
+    public String getMimeType() {
+        return mimeType;
+    }
+
+    public void setMimeType(String mimeType) {
+        this.mimeType = mimeType;
+    }
+
     public JSObject toJSObject() {
         JSObject toReturn = new JSObject();
         toReturn.put("recordDataBase64", recordDataBase64);
         toReturn.put("msDuration", msDuration);
+        toReturn.put("mimeType", mimeType);
         return toReturn;
     }
 }

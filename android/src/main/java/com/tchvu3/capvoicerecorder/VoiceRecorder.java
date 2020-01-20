@@ -94,7 +94,11 @@ public class VoiceRecorder extends Plugin {
         try {
             mediaRecorder.stopRecording();
             File recordedFile = mediaRecorder.getOutputFile();
-            RecordData recordData = new RecordData(readRecordedFileAsBase64(recordedFile), getMsDurationOfAudioFile(recordedFile.getAbsolutePath()));
+            RecordData recordData = new RecordData(
+                    readRecordedFileAsBase64(recordedFile),
+                    getMsDurationOfAudioFile(recordedFile.getAbsolutePath()),
+                    "video/3gpp"
+            );
             if (recordData.getRecordDataBase64() == null || recordData.getMsDuration() < 0)
                 call.reject(FAILED_TO_FETCH_RECORDING);
             else
