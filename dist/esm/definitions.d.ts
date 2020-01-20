@@ -8,6 +8,7 @@ export interface RecordingData {
     value: {
         recordDataBase64: Base64String;
         msDuration: number;
+        mimeType: string;
     };
 }
 export interface GenericResponse {
