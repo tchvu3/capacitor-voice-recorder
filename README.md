@@ -37,10 +37,7 @@ Capacitor plugin for simple voice recording
   in case of success, you will get the recording in base-64,
   the duration of the recording in milliseconds and the mime type
   
-
-
 ## Usage
-
 
 ```
 
@@ -88,4 +85,4 @@ VoiceRecorder.stopRecording()
 
 ## ios note
 make sure to include the NSMicrophoneUsageDescription key
-and a corresponding purpose string in your app’s Info.plist
+and a corresponding purpose string in your appï¿½s Info.plist
