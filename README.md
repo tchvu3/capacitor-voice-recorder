@@ -2,6 +2,11 @@
 
 Capacitor plugin for simple voice recording
 
+## Install
+```
+npm install --save capacitor-voice-recorder
+```
+
 ## API
 
 | Method                            | Info                                               | Platform    |
