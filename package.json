@@ -1,6 +1,6 @@
 {
   "name": "capacitor-voice-recorder",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Capacitor plugin for voice recording",
   "main": "dist/esm/index.js",
   "types": "dist/esm/index.d.ts",
