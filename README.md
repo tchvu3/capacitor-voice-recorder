@@ -88,6 +88,17 @@ VoiceRecorder.stopRecording()
 
 ```
 
+## Playback
+To play the recorded file you can use plain
+javascript:
+
+```
+const base64Sound = '...' // from plugin
+const audioRef = new Audio(`data:audio/aac;base64,${base64Sound}`)
+audioRef.oncanplaythrough = () => audioRef.play()
+audioRef.load()
+```
+
 ## ios note
-make sure to include the NSMicrophoneUsageDescription key
+Make sure to include the NSMicrophoneUsageDescription key
 and a corresponding purpose string in your app�s Info.plist
