@@ -101,4 +101,4 @@ audioRef.load()
 
 ## ios note
 Make sure to include the NSMicrophoneUsageDescription key
-and a corresponding purpose string in your app�s Info.plist
+and a corresponding purpose string in your app's Info.plist
