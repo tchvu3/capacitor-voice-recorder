@@ -102,3 +102,16 @@ audioRef.load()
 ## ios note
 Make sure to include the NSMicrophoneUsageDescription key
 and a corresponding purpose string in your app's Info.plist
+
+## android note
+Please make sure to add the plugin in your MainActivity.java like so:
+```
+import com.tchvu3.capvoicerecorder.VoiceRecorder;
+...
+public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    this.init(savedInstanceState, new ArrayList<Class<? extends Plugin>>() {{
+        add(VoiceRecorder.class); // Add this line
+    }});
+}
+```
