@@ -22,15 +22,18 @@ class CustomMediaRecorder {
         return URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
     }
     
-    public func startRecording() {
+    public func startRecording() -> Bool {
         do {
             recordingSession = AVAudioSession.sharedInstance()
-            try recordingSession.setCategory(.record)
+            try recordingSession.setCategory(AVAudioSessionCategoryRecord)
             try recordingSession.setActive(true)
             audioFilePath = getDirectoryToSaveAudioFile().appendingPathComponent("\(UUID().uuidString).aac")
             audioRecorder = try AVAudioRecorder(url: audioFilePath, settings: settings)
             audioRecorder.record()
-        } catch {}
+            return true
+        } catch {
+            return false
+        }
     }
     
     public func stopRecording() {

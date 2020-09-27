@@ -2,8 +2,10 @@ package com.tchvu3.capvoicerecorder;
 
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.util.Base64;
 
@@ -23,6 +25,7 @@ import static com.tchvu3.capvoicerecorder.Messages.ALREADY_RECORDING;
 import static com.tchvu3.capvoicerecorder.Messages.CANNOT_RECORD_ON_THIS_PHONE;
 import static com.tchvu3.capvoicerecorder.Messages.FAILED_TO_FETCH_RECORDING;
 import static com.tchvu3.capvoicerecorder.Messages.FAILED_TO_RECORD;
+import static com.tchvu3.capvoicerecorder.Messages.MICROPHONE_BEING_USED;
 import static com.tchvu3.capvoicerecorder.Messages.MISSING_PERMISSION;
 import static com.tchvu3.capvoicerecorder.Messages.RECORDING_HAS_NOT_STARTED;
 import static com.tchvu3.capvoicerecorder.Messages.RECORD_AUDIO_REQUEST_CODE;
@@ -67,6 +70,11 @@ public class VoiceRecorder extends Plugin {
 
         if (!CustomMediaRecorder.canPhoneCreateMediaRecorder(getContext())) {
             call.reject(CANNOT_RECORD_ON_THIS_PHONE);
+            return;
+        }
+
+        if (this.isMicrophoneOccupied()) {
+            call.reject(MICROPHONE_BEING_USED);
             return;
         }
 
@@ -153,6 +161,13 @@ public class VoiceRecorder extends Plugin {
         } catch (Exception ignore) {
             return -1;
         }
+    }
+
+    private boolean isMicrophoneOccupied() {
+        AudioManager audioManager = (AudioManager) this.getContext().getSystemService(Context.AUDIO_SERVICE);
+        if (audioManager == null)
+            return true;
+        return audioManager.getMode() != AudioManager.MODE_NORMAL;
     }
 
 }

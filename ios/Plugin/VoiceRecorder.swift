@@ -43,8 +43,12 @@ public class VoiceRecorder: CAPPlugin {
             return
         }
         
-        customMediaRecorder!.startRecording()
-        call.resolve(ResponseGenerator.successResponse())
+        let successfullyStartedRecording = customMediaRecorder!.startRecording()
+        if successfullyStartedRecording == false {
+            call.reject(Messages.CANNOT_RECORD_ON_THIS_PHONE)
+        } else {
+            call.resolve(ResponseGenerator.successResponse())
+        }
     }
     
     @objc func stopRecording(_ call: CAPPluginCall) {
@@ -75,7 +79,7 @@ public class VoiceRecorder: CAPPlugin {
     }
     
     func doesUserGaveAudioRecordingPermission() -> Bool {
-        return AVAudioSession.sharedInstance().recordPermission == AVAudioSession.RecordPermission.granted
+        return AVAudioSession.sharedInstance().recordPermission() == AVAudioSession.RecordPermission.granted
     }
     
     func readFileAsBase64(_ filePath: URL?) -> String? {

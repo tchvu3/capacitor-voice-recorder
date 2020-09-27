@@ -9,5 +9,6 @@ public abstract class Messages {
     public static final String RECORDING_HAS_NOT_STARTED = "RECORDING_HAS_NOT_STARTED";
     public static final String FAILED_TO_FETCH_RECORDING = "FAILED_TO_FETCH_RECORDING";
     public static final String ALREADY_RECORDING = "ALREADY_RECORDING";
+    public static final String MICROPHONE_BEING_USED = "MICROPHONE_BEING_USED";
 
 }

@@ -2,6 +2,7 @@ package com.tchvu3.capvoicerecorder;
 
 
 import android.content.Context;
+import android.media.AudioRecord;
 import android.media.MediaRecorder;
 
 import java.io.File;

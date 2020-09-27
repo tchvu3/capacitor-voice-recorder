@@ -34,7 +34,8 @@ npm install --save capacitor-voice-recorder
   the promise will reject with the message "MISSING_PERMISSION".
   if the phone is unable to record then the promise will reject
   with the message "CANNOT_VOICE_RECORD_ON_THIS_PHONE".
-  if there's a recording already running then the promise will reject with "ALREADY_RECORDING"
+  if there's a recording already running then the promise will reject with "ALREADY_RECORDING",
+  and if the microphone is being used by other app then the promise will reject with "MICROPHONE_BEING_USED".
   NOTE: in case of unknown error the promise will reject with "FAILED_TO_RECORD"
 ---
 * stopRecording - will stop the recording that previously started. if the function startRecording()
@@ -69,7 +70,7 @@ VoiceRecorder.hasAudioRecordingPermission.then((result: GenericResponse) => cons
 /**
 * In case of success the promise will resolve with {"value": true}
 * in case of an error the promise will reject with one of the following messages:
-* "MISSING_PERMISSION", "ALREADY_RECORDING", "CANNOT_RECORD_ON_THIS_PHONE" or "FAILED_TO_RECORD"
+* "MISSING_PERMISSION", "ALREADY_RECORDING", "CANNOT_RECORD_ON_THIS_PHONE", "MICROPHONE_BEING_USED" or "FAILED_TO_RECORD"
 */
 VoiceRecorder.startRecording()
 .then((result: GenericResponse) => console.log(result.value))

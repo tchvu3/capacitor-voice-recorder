@@ -1,4 +1,4 @@
-import { WebPlugin } from '@capacitor/core'
+import { registerWebPlugin, WebPlugin } from '@capacitor/core'
 import { GenericResponse, RecordingData, VoiceRecorderPlugin } from './definitions'
 
 export class VoiceRecorderWeb extends WebPlugin implements VoiceRecorderPlugin {
@@ -34,7 +34,5 @@ export class VoiceRecorderWeb extends WebPlugin implements VoiceRecorderPlugin {
 const VoiceRecorder = new VoiceRecorderWeb()
 
 export { VoiceRecorder }
-
-import { registerWebPlugin } from '@capacitor/core'
 
 registerWebPlugin(VoiceRecorder)

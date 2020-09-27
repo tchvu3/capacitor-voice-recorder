@@ -1,4 +1,4 @@
-import { WebPlugin } from '@capacitor/core';
+import { registerWebPlugin, WebPlugin } from '@capacitor/core';
 export class VoiceRecorderWeb extends WebPlugin {
     constructor() {
         super({
@@ -24,6 +24,5 @@ export class VoiceRecorderWeb extends WebPlugin {
 }
 const VoiceRecorder = new VoiceRecorderWeb();
 export { VoiceRecorder };
-import { registerWebPlugin } from '@capacitor/core';
 registerWebPlugin(VoiceRecorder);
 //# sourceMappingURL=web.js.map
