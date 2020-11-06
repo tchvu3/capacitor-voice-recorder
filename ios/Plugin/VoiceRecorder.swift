@@ -79,7 +79,7 @@ public class VoiceRecorder: CAPPlugin {
     }
     
     func doesUserGaveAudioRecordingPermission() -> Bool {
-        return AVAudioSession.sharedInstance().recordPermission() == AVAudioSession.RecordPermission.granted
+        return AVAudioSession.sharedInstance().recordPermission == AVAudioSession.RecordPermission.granted
     }
     
     func readFileAsBase64(_ filePath: URL?) -> String? {
