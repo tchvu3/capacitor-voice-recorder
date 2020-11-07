@@ -48,9 +48,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://tchvu3@bitbucket.org/tchvu3/capacitor-voice-recorder.git"
+    "url": "https://github.com/tchvu3/capacitor-voice-recorder"
   },
   "bugs": {
-    "url": "https://tchvu3@bitbucket.org/tchvu3/capacitor-voice-recorder.git/issues"
+    "url": "https://github.com/tchvu3/capacitor-voice-recorder/issues"
   }
 }
