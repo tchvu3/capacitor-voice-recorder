@@ -68,11 +68,6 @@ public class VoiceRecorder extends Plugin {
             return;
         }
 
-        if (!CustomMediaRecorder.canPhoneCreateMediaRecorder(getContext())) {
-            call.reject(CANNOT_RECORD_ON_THIS_PHONE);
-            return;
-        }
-
         if (this.isMicrophoneOccupied()) {
             call.reject(MICROPHONE_BEING_USED);
             return;
