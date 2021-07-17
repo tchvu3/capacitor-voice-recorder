@@ -41,9 +41,13 @@ No configuration required for this plugin.
 
 ## Supported methods
 
-| Name | Android | iOS | Web | | :------------------------------ | :------ | :-- | :-- | | canDeviceVoiceRecord | ✅ | ✅ | ❌ | |
-requestAudioRecordingPermission | ✅ | ✅ | ❌ | | hasAudioRecordingPermission | ✅ | ✅ | ❌ | | startRecording | ✅ | ✅ | ❌ | | stopRecording | ✅
-| ✅ | ❌ |
+| Name | Android | iOS | Web |  
+| :------------------------------ | :------ | :-- | :-- |  
+| canDeviceVoiceRecord | ✅ | ✅ | ❌ | |  
+requestAudioRecordingPermission | ✅ | ✅ | ❌ |  
+| hasAudioRecordingPermission | ✅ | ✅ | ❌ |  
+| startRecording | ✅ | ✅ | ❌ |  
+| stopRecording | ✅ | ✅ | ❌ |
 
 ## Explanation
 

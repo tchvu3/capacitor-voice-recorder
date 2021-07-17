@@ -13,11 +13,14 @@
     "ios/Plugin/",
     "CapacitorVoiceRecorder.podspec"
   ],
-  "author": "Avihu Harush",
+  "author": {
+    "name": "Avihu Harush",
+    "email": "tchvu3@gmail.com"
+  },
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tchvu3/capacitor-voice-recorder.git"
+    "url": "https://github.com/tchvu3/capacitor-voice-recorder.git"
   },
   "bugs": {
     "url": "https://github.com/tchvu3/capacitor-voice-recorder/issues"
@@ -25,7 +28,13 @@
   "keywords": [
     "capacitor",
     "plugin",
-    "native"
+    "native",
+    "voice",
+    "audio",
+    "record",
+    "recorder",
+    "ios",
+    "android"
   ],
   "scripts": {
     "verify": "npm run verify:ios && npm run verify:android && npm run verify:web",
