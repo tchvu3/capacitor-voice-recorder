@@ -1,10 +1,27 @@
 import { WebPlugin } from '@capacitor/core';
 
-import type { VoiceRecorderPlugin } from './definitions';
+import type { GenericResponse, RecordingData, VoiceRecorderPlugin } from './definitions';
 
 export class VoiceRecorderWeb extends WebPlugin implements VoiceRecorderPlugin {
-  async echo(options: { value: string }): Promise<{ value: string }> {
-    console.log('ECHO', options);
-    return options;
+
+  canDeviceVoiceRecord (): Promise<GenericResponse> {
+    return Promise.reject(new Error('VoiceRecorder does not have web implementation'));
   }
+
+  hasAudioRecordingPermission (): Promise<GenericResponse> {
+    return Promise.reject(new Error('VoiceRecorder does not have web implementation'));
+  }
+
+  requestAudioRecordingPermission (): Promise<GenericResponse> {
+    return Promise.reject(new Error('VoiceRecorder does not have web implementation'));
+  }
+
+  startRecording (): Promise<GenericResponse> {
+    return Promise.reject(new Error('VoiceRecorder does not have web implementation'));
+  }
+
+  stopRecording (): Promise<RecordingData> {
+    return Promise.reject(new Error('VoiceRecorder does not have web implementation'));
+  }
+
 }
