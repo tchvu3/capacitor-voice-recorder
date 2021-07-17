@@ -35,21 +35,6 @@ npx cap sync
 Make sure to include the ```NSMicrophoneUsageDescription```
 key, and a corresponding purpose string in your app's Info.plist
 
-#### android note
-
-Make sure to add the plugin to your MainActivity.java like so:
-
-```
-import com.tchvu3.capvoicerecorder.VoiceRecorder;
-...
-public void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    this.init(savedInstanceState, new ArrayList<Class<? extends Plugin>>() {{
-        add(VoiceRecorder.class); // Add this line
-    }});
-}
-```
-
 ## Configuration
 
 No configuration required for this plugin.
@@ -90,12 +75,8 @@ requestAudioRecordingPermission | ✅ | ✅ | ❌ | | hasAudioRecordingPermissio
 
 ```
 
-import { Plugins } from "@capacitor/core"
-
-// not mandatory, only for code completion
-import { RecordingData, GenericResponse } from 'capacitor-voice-recorder'
-
-const { VoiceRecorder } = Plugins
+// only 'VoiceRecorder' is mandatory, the rest is for typing
+import { VoiceRecorder, VoiceRecorderPlugin, RecordingData, GenericResponse } from 'capacitor-voice-recorder';
 
 // will print true / false based on the device ability to record
 VoiceRecorder.canDeviceVoiceRecord().then((result: GenericResponse) => console.log(result.value))
