@@ -2,12 +2,10 @@ package com.tchvu3.capacitorvoicerecorder;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.util.Base64;
 
-import com.getcapacitor.JSObject;
 import com.getcapacitor.PermissionState;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
@@ -28,13 +26,12 @@ import static com.tchvu3.capacitorvoicerecorder.Messages.FAILED_TO_RECORD;
 import static com.tchvu3.capacitorvoicerecorder.Messages.MICROPHONE_BEING_USED;
 import static com.tchvu3.capacitorvoicerecorder.Messages.MISSING_PERMISSION;
 import static com.tchvu3.capacitorvoicerecorder.Messages.RECORDING_HAS_NOT_STARTED;
-import static com.tchvu3.capacitorvoicerecorder.Messages.RECORD_AUDIO_REQUEST_CODE;
 
 @CapacitorPlugin(
         name = "VoiceRecorder",
-        permissions = {@Permission(alias = VoiceRecorderPlugin.RECORD_AUDIO_ALIAS, strings = {Manifest.permission.RECORD_AUDIO})}
+        permissions = {@Permission(alias = VoiceRecorder.RECORD_AUDIO_ALIAS, strings = {Manifest.permission.RECORD_AUDIO})}
 )
-public class VoiceRecorderPlugin extends Plugin {
+public class VoiceRecorder extends Plugin {
 
     static final String RECORD_AUDIO_ALIAS = "voice recording";
     private CustomMediaRecorder mediaRecorder;
@@ -129,7 +126,7 @@ public class VoiceRecorderPlugin extends Plugin {
     }
 
     private boolean doesUserGaveAudioRecordingPermission() {
-        return getPermissionState(VoiceRecorderPlugin.RECORD_AUDIO_ALIAS).equals(PermissionState.GRANTED);
+        return getPermissionState(VoiceRecorder.RECORD_AUDIO_ALIAS).equals(PermissionState.GRANTED);
     }
 
     private String readRecordedFileAsBase64(File recordedFile) {
