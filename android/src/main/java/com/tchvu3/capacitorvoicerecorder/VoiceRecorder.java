@@ -38,10 +38,7 @@ public class VoiceRecorder extends Plugin {
 
     @PluginMethod()
     public void canDeviceVoiceRecord(PluginCall call) {
-        if (CustomMediaRecorder.canPhoneCreateMediaRecorder(getContext()))
-            call.resolve(ResponseGenerator.successResponse());
-        else
-            call.resolve(ResponseGenerator.failResponse());
+        call.resolve(ResponseGenerator.successResponse());
     }
 
     @PluginMethod()
@@ -71,11 +68,6 @@ public class VoiceRecorder extends Plugin {
     public void startRecording(PluginCall call) {
         if (!doesUserGaveAudioRecordingPermission()) {
             call.reject(MISSING_PERMISSION);
-            return;
-        }
-
-        if (!CustomMediaRecorder.canPhoneCreateMediaRecorder(getContext())) {
-            call.reject(CANNOT_RECORD_ON_THIS_PHONE);
             return;
         }
 
