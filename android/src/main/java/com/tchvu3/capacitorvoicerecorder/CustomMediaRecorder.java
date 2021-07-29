@@ -50,4 +50,23 @@ public class CustomMediaRecorder {
         return outputFile.delete();
     }
 
+    public static boolean canPhoneCreateMediaRecorder(Context context) {
+        return true;
+    }
+
+    private static boolean canPhoneCreateMediaRecorderWhileHavingPermission(Context context) {
+        CustomMediaRecorder tempMediaRecorder = null;
+        try {
+            tempMediaRecorder = new CustomMediaRecorder(context);
+            tempMediaRecorder.startRecording();
+            tempMediaRecorder.stopRecording();
+            return true;
+        } catch (Exception exp) {
+            return exp.getMessage().startsWith("stop failed");
+        } finally {
+            if (tempMediaRecorder != null)
+                tempMediaRecorder.deleteOutputFile();
+        }
+    }
+
 }
