@@ -9,4 +9,7 @@ CAP_PLUGIN(VoiceRecorder, "VoiceRecorder",
            CAP_PLUGIN_METHOD(hasAudioRecordingPermission, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(startRecording, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(stopRecording, CAPPluginReturnPromise);
+           CAP_PLUGIN_METHOD(pauseRecording, CAPPluginReturnPromise);
+           CAP_PLUGIN_METHOD(resumeRecording, CAPPluginReturnPromise);
+           CAP_PLUGIN_METHOD(getCurrentStatus, CAPPluginReturnPromise);
 )

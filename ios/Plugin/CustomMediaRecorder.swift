@@ -13,6 +13,7 @@ class CustomMediaRecorder {
     private var recordingSession: AVAudioSession!
     private var audioRecorder: AVAudioRecorder!
     private var audioFilePath: URL!
+    private var status = CurrentRecordingStatus.NONE
     
     private let settings = [
         AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
@@ -33,6 +34,7 @@ class CustomMediaRecorder {
             audioFilePath = getDirectoryToSaveAudioFile().appendingPathComponent("\(UUID().uuidString).aac")
             audioRecorder = try AVAudioRecorder(url: audioFilePath, settings: settings)
             audioRecorder.record()
+            status = CurrentRecordingStatus.RECORDING
             return true
         } catch {
             return false
@@ -45,11 +47,36 @@ class CustomMediaRecorder {
             try recordingSession.setActive(false)
             audioRecorder = nil
             recordingSession = nil
+            status = CurrentRecordingStatus.NONE
         } catch {}
     }
     
     public func getOutputFile() -> URL {
         return audioFilePath
+    }
+    
+    public func pauseRecording() -> Bool {
+        if(status == CurrentRecordingStatus.RECORDING) {
+            audioRecorder.pause()
+            status = CurrentRecordingStatus.PAUSED
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    public func resumeRecording() -> Bool {
+        if(status == CurrentRecordingStatus.PAUSED) {
+            audioRecorder.record()
+            status = CurrentRecordingStatus.RECORDING
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    public func getCurrentStatus() -> CurrentRecordingStatus {
+        return status
     }
     
 }

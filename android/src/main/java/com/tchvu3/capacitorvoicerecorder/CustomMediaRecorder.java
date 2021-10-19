@@ -2,6 +2,9 @@ package com.tchvu3.capacitorvoicerecorder;
 
 import android.content.Context;
 import android.media.MediaRecorder;
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,6 +14,7 @@ public class CustomMediaRecorder {
     private final Context context;
     private MediaRecorder mediaRecorder;
     private File outputFile;
+    private CurrentRecordingStatus currentRecordingStatus = CurrentRecordingStatus.NONE;
 
     public CustomMediaRecorder(Context context) throws IOException {
         this.context = context;
@@ -35,15 +39,49 @@ public class CustomMediaRecorder {
 
     public void startRecording() {
         mediaRecorder.start();
+        currentRecordingStatus = CurrentRecordingStatus.RECORDING;
     }
 
     public void stopRecording() {
         mediaRecorder.stop();
         mediaRecorder.release();
+        currentRecordingStatus = CurrentRecordingStatus.NONE;
     }
 
     public File getOutputFile() {
         return outputFile;
+    }
+
+    public boolean pauseRecording() throws NotSupportedOsVersion {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            throw new NotSupportedOsVersion();
+        }
+
+        if (currentRecordingStatus == CurrentRecordingStatus.RECORDING) {
+            mediaRecorder.pause();
+            currentRecordingStatus = CurrentRecordingStatus.PAUSED;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean resumeRecording() throws NotSupportedOsVersion {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            throw new NotSupportedOsVersion();
+        }
+
+        if (currentRecordingStatus == CurrentRecordingStatus.PAUSED) {
+            mediaRecorder.resume();
+            currentRecordingStatus = CurrentRecordingStatus.RECORDING;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public CurrentRecordingStatus getCurrentStatus() {
+        return currentRecordingStatus;
     }
 
     public boolean deleteOutputFile() {

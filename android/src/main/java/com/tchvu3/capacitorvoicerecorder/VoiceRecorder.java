@@ -25,6 +25,7 @@ import static com.tchvu3.capacitorvoicerecorder.Messages.FAILED_TO_FETCH_RECORDI
 import static com.tchvu3.capacitorvoicerecorder.Messages.FAILED_TO_RECORD;
 import static com.tchvu3.capacitorvoicerecorder.Messages.MICROPHONE_BEING_USED;
 import static com.tchvu3.capacitorvoicerecorder.Messages.MISSING_PERMISSION;
+import static com.tchvu3.capacitorvoicerecorder.Messages.NOT_SUPPORTED_OS_VERSION;
 import static com.tchvu3.capacitorvoicerecorder.Messages.RECORDING_HAS_NOT_STARTED;
 
 @CapacitorPlugin(
@@ -122,6 +123,41 @@ public class VoiceRecorder extends Plugin {
         } finally {
             mediaRecorder.deleteOutputFile();
             mediaRecorder = null;
+        }
+    }
+
+    @PluginMethod()
+    public void pauseRecording(PluginCall call) {
+        if (mediaRecorder == null) {
+            call.reject(RECORDING_HAS_NOT_STARTED);
+            return;
+        }
+        try {
+            call.resolve(ResponseGenerator.fromBoolean(mediaRecorder.pauseRecording()));
+        } catch (NotSupportedOsVersion exception) {
+            call.reject(NOT_SUPPORTED_OS_VERSION);
+        }
+    }
+
+    @PluginMethod()
+    public void resumeRecording(PluginCall call) {
+        if (mediaRecorder == null) {
+            call.reject(RECORDING_HAS_NOT_STARTED);
+            return;
+        }
+        try {
+            call.resolve(ResponseGenerator.fromBoolean(mediaRecorder.resumeRecording()));
+        } catch (NotSupportedOsVersion exception) {
+            call.reject(NOT_SUPPORTED_OS_VERSION);
+        }
+    }
+
+    @PluginMethod()
+    public void getCurrentStatus(PluginCall call) {
+        if (mediaRecorder == null) {
+            call.resolve(ResponseGenerator.statusResponse(CurrentRecordingStatus.NONE));
+        } else {
+            call.resolve(ResponseGenerator.statusResponse(mediaRecorder.getCurrentStatus()));
         }
     }
 

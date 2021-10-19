@@ -82,6 +82,30 @@ public class VoiceRecorder: CAPPlugin {
         }
     }
     
+    @objc func pauseRecording(_ call: CAPPluginCall) {
+        if(customMediaRecorder == nil) {
+            call.reject(Messages.RECORDING_HAS_NOT_STARTED)
+        } else {
+            call.resolve(ResponseGenerator.fromBoolean(customMediaRecorder?.pauseRecording() ?? false))
+        }
+    }
+    
+    @objc func resumeRecording(_ call: CAPPluginCall) {
+        if(customMediaRecorder == nil) {
+            call.reject(Messages.RECORDING_HAS_NOT_STARTED)
+        } else {
+            call.resolve(ResponseGenerator.fromBoolean(customMediaRecorder?.resumeRecording() ?? false))
+        }
+    }
+    
+    @objc func getCurrentStatus(_ call: CAPPluginCall) {
+        if(customMediaRecorder == nil) {
+            call.resolve(ResponseGenerator.statusResponse(CurrentRecordingStatus.NONE))
+        } else {
+            call.resolve(ResponseGenerator.statusResponse(customMediaRecorder?.getCurrentStatus() ?? CurrentRecordingStatus.NONE))
+        }
+    }
+    
     func doesUserGaveAudioRecordingPermission() -> Bool {
         return AVAudioSession.sharedInstance().recordPermission == AVAudioSession.RecordPermission.granted
     }

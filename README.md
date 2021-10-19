@@ -44,9 +44,9 @@ requestAudioRecordingPermission | ✅ | ✅ | ✅ |
 | hasAudioRecordingPermission | ✅ | ✅ | ✅ |  
 | startRecording | ✅ | ✅ | ✅ |  
 | stopRecording | ✅ | ✅ | ✅ |
-| pauseRecording | ❌ | ❌ | ✅ |
-| resumeRecording | ❌ | ❌ | ✅ |
-| getCurrentStatus | ❌ | ❌ | ✅ |
+| pauseRecording | ✅ | ✅ | ✅ |
+| resumeRecording | ✅ | ✅ | ✅ |
+| getCurrentStatus | ✅ | ✅ | ✅ |
 
 ## Explanation
 
@@ -86,20 +86,24 @@ requestAudioRecordingPermission | ✅ | ✅ | ✅ |
 ---
 
 * pauseRecording - will pause an ongoing recording. note that if the recording has not started yet the promise
-will reject with `RECORDING_HAS_NOT_STARTED`. in case of success the promise will resolve to `{ value: true }` if the pause
-was successful or `{ value: false }` if the recording is already paused.
+  will reject with `RECORDING_HAS_NOT_STARTED`. in case of success the promise will resolve to `{ value: true }` if the pause
+  was successful or `{ value: false }` if the recording is already paused.
+  note that on certain mobile os versions this function is not supported.
+  in these cases the function will reject with `NOT_SUPPORTED_OS_VERSION` and your only viable options is to stop the recording instead.
 
 ---
 
 * resumeRecording - will resume a paused recording. note that if the recording has not started yet the promise
   will reject with `RECORDING_HAS_NOT_STARTED`. in case of success the promise will resolve to `{ value: true }` if the resume
   was successful or `{ value: false }` if the recording is already running.
+  note that on certain mobile os versions this function is not supported.
+  in these cases the function will reject with `NOT_SUPPORTED_OS_VERSION` and your only viable options is to stop the recording instead
 
 ---
 
 * getCurrentStatus - will let you know the current status of the current recording (if there is any at all).
-will resolve with one of the following values: `{ status: "NONE" }` if the plugin is idle and waiting to start a new recording.
-`{ status: "RECORDING" }` if the plugin is in the middle of recording and `{ status: "PAUSED" }` if the recording is paused right now.
+  will resolve with one of the following values: `{ status: "NONE" }` if the plugin is idle and waiting to start a new recording.
+  `{ status: "RECORDING" }` if the plugin is in the middle of recording and `{ status: "PAUSED" }` if the recording is paused right now.
 
 ## Usage
 
@@ -148,6 +152,7 @@ VoiceRecorder.stopRecording()
 * will pause an ongoing recording. note that if the recording has not started yet the promise
 * will reject with `RECORDING_HAS_NOT_STARTED`. in case of success the promise will resolve to `{ value: true }` if the pause
 * was successful or `{ value: false }` if the recording is already paused.
+* if the current mobile os does not support this method the promise will reject with `NOT_SUPPORTED_OS_VERSION`
 */
 VoiceRecorder.pauseRecording()
 .then((result: GenericResponse) => console.log(result.value))
@@ -156,7 +161,8 @@ VoiceRecorder.pauseRecording()
 /**
 * will resume a paused recording. note that if the recording has not started yet the promise
 * will reject with `RECORDING_HAS_NOT_STARTED`. in case of success the promise will resolve to `{ value: true }` if the resume
-* was successful or `{ value: false }` if the recording is already running
+* was successful or `{ value: false }` if the recording is already running.
+* if the current mobile os does not support this method the promise will reject with `NOT_SUPPORTED_OS_VERSION`
 */
 VoiceRecorder.resumeRecording()
 .then((result: GenericResponse) => console.log(result.value))
