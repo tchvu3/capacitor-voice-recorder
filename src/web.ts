@@ -1,27 +1,42 @@
 import { WebPlugin } from '@capacitor/core';
 
-import type { GenericResponse, RecordingData, VoiceRecorderPlugin } from './definitions';
+import { VoiceRecorderImpl } from './VoiceRecorderImpl';
+import type { CurrentRecordingStatus, GenericResponse, RecordingData, VoiceRecorderPlugin } from './definitions';
 
 export class VoiceRecorderWeb extends WebPlugin implements VoiceRecorderPlugin {
 
-  canDeviceVoiceRecord (): Promise<GenericResponse> {
-    return Promise.reject(new Error('VoiceRecorder does not have web implementation'));
+  private voiceRecorderInstance = new VoiceRecorderImpl();
+
+  public canDeviceVoiceRecord (): Promise<GenericResponse> {
+    return VoiceRecorderImpl.canDeviceVoiceRecord();
   }
 
-  hasAudioRecordingPermission (): Promise<GenericResponse> {
-    return Promise.reject(new Error('VoiceRecorder does not have web implementation'));
+  public hasAudioRecordingPermission (): Promise<GenericResponse> {
+    return VoiceRecorderImpl.hasAudioRecordingPermission();
   }
 
-  requestAudioRecordingPermission (): Promise<GenericResponse> {
-    return Promise.reject(new Error('VoiceRecorder does not have web implementation'));
+  public requestAudioRecordingPermission (): Promise<GenericResponse> {
+    return VoiceRecorderImpl.requestAudioRecordingPermission();
   }
 
-  startRecording (): Promise<GenericResponse> {
-    return Promise.reject(new Error('VoiceRecorder does not have web implementation'));
+  public startRecording (): Promise<GenericResponse> {
+    return this.voiceRecorderInstance.startRecording();
   }
 
-  stopRecording (): Promise<RecordingData> {
-    return Promise.reject(new Error('VoiceRecorder does not have web implementation'));
+  public stopRecording (): Promise<RecordingData> {
+    return this.voiceRecorderInstance.stopRecording();
+  }
+
+  public pauseRecording (): Promise<GenericResponse> {
+    return this.voiceRecorderInstance.pauseRecording();
+  }
+
+  public resumeRecording (): Promise<GenericResponse> {
+    return this.voiceRecorderInstance.resumeRecording();
+  }
+
+  public getCurrentStatus (): Promise<CurrentRecordingStatus> {
+    return this.voiceRecorderInstance.getCurrentStatus();
   }
 
 }

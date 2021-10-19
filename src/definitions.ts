@@ -5,21 +5,32 @@ export interface RecordingData {
     recordDataBase64: Base64String
     msDuration: number
     mimeType: string
-  }
+  };
 }
 
 export interface GenericResponse {
-  value: boolean
+  value: boolean;
+}
+
+export interface CurrentRecordingStatus {
+  status: 'RECORDING' | 'PAUSED' | 'NONE';
 }
 
 export interface VoiceRecorderPlugin {
-  canDeviceVoiceRecord (): Promise<GenericResponse>
+  canDeviceVoiceRecord (): Promise<GenericResponse>;
 
-  requestAudioRecordingPermission (): Promise<GenericResponse>
+  requestAudioRecordingPermission (): Promise<GenericResponse>;
 
-  hasAudioRecordingPermission (): Promise<GenericResponse>
+  hasAudioRecordingPermission (): Promise<GenericResponse>;
 
-  startRecording (): Promise<GenericResponse>
+  startRecording (): Promise<GenericResponse>;
 
-  stopRecording (): Promise<RecordingData>
+  stopRecording (): Promise<RecordingData>;
+
+  pauseRecording (): Promise<GenericResponse>;
+
+  resumeRecording (): Promise<GenericResponse>;
+
+  getCurrentStatus (): Promise<CurrentRecordingStatus>;
+
 }
