@@ -56,6 +56,7 @@ export class VoiceRecorderImpl {
     }
     try {
       this.mediaRecorder.stop();
+      this.mediaRecorder.stream.getTracks().forEach((t)=>t.stop());
       return this.pendingResult;
     } catch (ignore) {
       throw failedToFetchRecordingError();
