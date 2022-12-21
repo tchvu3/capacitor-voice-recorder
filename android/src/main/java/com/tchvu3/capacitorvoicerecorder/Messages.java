@@ -9,6 +9,7 @@ public abstract class Messages {
     public static final String FAILED_TO_FETCH_RECORDING = "FAILED_TO_FETCH_RECORDING";
     public static final String NOT_SUPPORTED_OS_VERSION = "NOT_SUPPORTED_OS_VERSION";
     public static final String ALREADY_RECORDING = "ALREADY_RECORDING";
+    public static final String EMPTY_RECORDING = "EMPTY_RECORDING";
     public static final String MICROPHONE_BEING_USED = "MICROPHONE_BEING_USED";
 
 }

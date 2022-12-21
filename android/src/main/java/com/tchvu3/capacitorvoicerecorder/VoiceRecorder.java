@@ -106,7 +106,7 @@ public class VoiceRecorder extends Plugin {
                     "audio/aac"
             );
             if (recordData.getRecordDataBase64() == null || recordData.getMsDuration() < 0)
-                call.reject(Messages.FAILED_TO_FETCH_RECORDING);
+                call.reject(Messages.EMPTY_RECORDING);
             else
                 call.resolve(ResponseGenerator.dataResponse(recordData.toJSObject()));
         } catch (Exception exp) {

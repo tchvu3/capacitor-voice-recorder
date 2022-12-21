@@ -79,6 +79,7 @@ requestAudioRecordingPermission | ✅ | ✅ | ✅ |
 
 * stopRecording - will stop the recording that has been previously started. if the function `startRecording` has not been called beforehand
   the promise will reject with `RECORDING_HAS_NOT_STARTED`.
+  if the recording has been stopped immediately after it has been started the promise will reject with `EMPTY_RECORDING`.
   in a case of unknown error the promise will reject with `FAILED_TO_FETCH_RECORDING`.
   in case of success, you will get the recording in base-64, the duration of the
   recording in milliseconds, and the mime type.

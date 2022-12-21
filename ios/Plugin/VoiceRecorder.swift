@@ -72,7 +72,7 @@ public class VoiceRecorder: CAPPlugin {
         )
         customMediaRecorder = nil
         if recordData.recordDataBase64 == nil || recordData.msDuration < 0 {
-            call.reject(Messages.FAILED_TO_FETCH_RECORDING)
+            call.reject(Messages.EMPTY_RECORDING)
         } else {
             call.resolve(ResponseGenerator.dataResponse(recordData.toDictionary()))
         }
