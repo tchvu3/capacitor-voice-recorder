@@ -205,3 +205,9 @@ const audioRef = new Audio(`data:${mimeType};base64,${base64Sound}`)
 audioRef.oncanplaythrough = () => audioRef.play()
 audioRef.load()
 ```
+
+## Donation
+
+If you enjoy my work and find it useful, feel free to invite me to a cup of coffee :)
+
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/tchvu3)
