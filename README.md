@@ -6,7 +6,7 @@
 <p align="center">Capacitor plugin for simple voice recording (For Capacitor 4)</p>
 
 <p align="center">
-  <img src="https://img.shields.io/maintenance/yes/2022" />
+  <img src="https://img.shields.io/maintenance/yes/2023" />
   <a href="https://www.npmjs.com/package/capacitor-voice-recorder"><img src="https://img.shields.io/npm/l/capacitor-voice-recorder" /></a>
 <br>
   <a href="https://www.npmjs.com/package/capacitor-voice-recorder"><img src="https://img.shields.io/npm/dw/capacitor-voice-recorder" /></a>
