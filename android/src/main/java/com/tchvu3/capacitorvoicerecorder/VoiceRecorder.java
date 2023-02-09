@@ -41,7 +41,7 @@ public class VoiceRecorder extends Plugin {
         if (doesUserGaveAudioRecordingPermission()) {
             call.resolve(ResponseGenerator.successResponse());
         } else {
-            requestPermissions(call);
+            requestPermissionForAlias(RECORD_AUDIO_ALIAS, call, "recordAudioPermissionCallback");
         }
     }
 
