@@ -108,7 +108,7 @@ requestAudioRecordingPermission | ✅ | ✅ | ✅ |
 
 ## Usage
 
-```
+```javascript
 
 // only 'VoiceRecorder' is mandatory, the rest is for typing
 import { VoiceRecorder, VoiceRecorderPlugin, RecordingData, GenericResponse, CurrentRecordingStatus } from 'capacitor-voice-recorder';
@@ -198,7 +198,7 @@ as this plugin focuses on the recording aspect, it does not provide any conversi
 
 To play the recorded file you can use plain javascript:
 
-```
+```javascript
 const base64Sound = '...' // from plugin
 const mimeType = '...'  // from plugin
 const audioRef = new Audio(`data:${mimeType};base64,${base64Sound}`)
