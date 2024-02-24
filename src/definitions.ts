@@ -12,8 +12,14 @@ export interface GenericResponse {
   value: boolean;
 }
 
+export enum RecordingStatus {
+  RECORDING = 'RECORDING',
+  PAUSED = 'PAUSED',
+  NONE = 'NONE'
+}
+
 export interface CurrentRecordingStatus {
-  status: 'RECORDING' | 'PAUSED' | 'NONE';
+  status: RecordingStatus | 'RECORDING' | 'PAUSED' | 'NONE';
 }
 
 export interface VoiceRecorderPlugin {
