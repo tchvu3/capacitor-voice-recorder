@@ -45,6 +45,7 @@ public class VoiceRecorder: CAPPlugin {
         
         let successfullyStartedRecording = customMediaRecorder!.startRecording()
         if successfullyStartedRecording == false {
+            customMediaRecorder = nil
             call.reject(Messages.CANNOT_RECORD_ON_THIS_PHONE)
         } else {
             call.resolve(ResponseGenerator.successResponse())
