@@ -83,6 +83,7 @@ public class VoiceRecorder extends Plugin {
             mediaRecorder.startRecording();
             call.resolve(ResponseGenerator.successResponse());
         } catch (Exception exp) {
+            mediaRecorder = null;
             call.reject(Messages.FAILED_TO_RECORD, exp);
         }
     }
