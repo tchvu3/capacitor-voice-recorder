@@ -15,12 +15,10 @@ jobs:
     timeout-minutes: 30
     name: "Linting"
     steps:
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: 18.x
-      - name: NPM ^9.5.0
-        run: npm i -g npm@^9.5.0 --registry=https://registry.npmjs.org
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Restore Dependency Cache
         id: cache-modules
         uses: actions/cache@v3
@@ -40,12 +38,10 @@ jobs:
       - lint
     steps:
       - run: sudo xcode-select --switch /Applications/Xcode_15.0.app
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: 18.x
-      - name: NPM ^9.5.0
-        run: npm i -g npm@^9.5.0 --registry=https://registry.npmjs.org
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Restore Dependency Cache
         id: cache-modules
         uses: actions/cache@v3
@@ -64,7 +60,7 @@ jobs:
     needs:
       - lint
     steps:
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: 18.x
       - name: set up JDK 17
@@ -72,9 +68,7 @@ jobs:
         with:
           java-version: '17'
           distribution: 'zulu'
-      - name: NPM ^9.5.0
-        run: npm i -g npm@^9.5.0 --registry=https://registry.npmjs.org
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Restore Dependency Cache
         id: cache-modules
         uses: actions/cache@v3
@@ -93,12 +87,10 @@ jobs:
     needs:
       - lint
     steps:
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: 18.x
-      - name: NPM ^9.5.0
-        run: npm i -g npm@^9.5.0 --registry=https://registry.npmjs.org
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Restore Dependency Cache
         id: cache-modules
         uses: actions/cache@v3
@@ -119,12 +111,10 @@ jobs:
       - verify-ios
       - verify-android
     steps:
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: 18.x
-      - name: NPM ^9.5.0
-        run: npm i -g npm@^9.5.0 --registry=https://registry.npmjs.org
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Restore Dependency Cache
         id: cache-modules
         uses: actions/cache@v3
