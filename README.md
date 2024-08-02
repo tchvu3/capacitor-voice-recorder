@@ -15,8 +15,8 @@
 
 ## Maintainers
 
-| Maintainer | GitHub |
-| -----------| -------|
+| Maintainer   | GitHub                              |
+|--------------|-------------------------------------|
 | Avihu Harush | [tchvu3](https://github.com/tchvu3) |
 
 ## Installation
@@ -37,147 +37,166 @@ No configuration required for this plugin.
 
 ## Supported methods
 
-| Name | Android | iOS | Web |
-| :------------------------------ | :------ | :-- | :-- |
-| canDeviceVoiceRecord | ✅ | ✅ | ✅ |
-requestAudioRecordingPermission | ✅ | ✅ | ✅ |
-| hasAudioRecordingPermission | ✅ | ✅ | ✅ |
-| startRecording | ✅ | ✅ | ✅ |
-| stopRecording | ✅ | ✅ | ✅ |
-| pauseRecording | ✅ | ✅ | ✅ |
-| resumeRecording | ✅ | ✅ | ✅ |
-| getCurrentStatus | ✅ | ✅ | ✅ |
+| Name                            | Android | iOS | Web |
+|:--------------------------------|:--------|:----|:----|
+| canDeviceVoiceRecord            | ✅       | ✅   | ✅   |
+| requestAudioRecordingPermission | ✅       | ✅   | ✅   |
+| hasAudioRecordingPermission     | ✅       | ✅   | ✅   |
+| startRecording                  | ✅       | ✅   | ✅   |
+| stopRecording                   | ✅       | ✅   | ✅   |
+| pauseRecording                  | ✅       | ✅   | ✅   |
+| resumeRecording                 | ✅       | ✅   | ✅   |
+| getCurrentStatus                | ✅       | ✅   | ✅   |
 
-## Explanation
+## Overview
 
-* canDeviceVoiceRecord - on mobile this function will always return a promise that resolves to `{ value: true }`,
-  while in a browser it will be resolved to `{ value: true }` / `{ value: false }` based on the browser's ability to record.
-  note that this method does not take into account the permission status,
-  only if the browser itself is capable of recording at all.
+The `capacitor-voice-recorder` plugin allows you to record audio on Android, iOS, and Web platforms. Below is a summary
+of the key methods and how to use them.
 
----
+### Checking Device Capabilities and Permissions
 
-* requestAudioRecordingPermission - if the permission has already been provided then the promise will resolve with `{ value: true }`,
-  otherwise the promise will resolve to `{ value: true }` / `{ value: false }` based on the answer of the user to the request.
+#### canDeviceVoiceRecord
 
----
+Checks if the device/browser can record audio.
 
-* hasAudioRecordingPermission - will resolve to `{ value: true }` / `{ value: false }` based on the status of the permission.
-  please note that the web implementation of this plugin uses the Permissions API under the hood which is not widespread as of now.
-  as a result, if the status of the permission cannot be checked the promise will reject with `COULD_NOT_QUERY_PERMISSION_STATUS`.
-  in that case you have no choice but to use the `requestAudioRecordingPermission` function straight away or `startRecording` and capture any exception that is thrown.
-
----
-
-* startRecording - if the app lacks the required permission then the promise will reject with the message `MISSING_PERMISSION`.
-  if the current device cannot voice record at all (for example, due to old browser) then the promise will reject with `DEVICE_CANNOT_VOICE_RECORD`.
-  if there's a recording already running then the promise will reject with `ALREADY_RECORDING`,
-  and if other apps are using the microphone then the promise will reject
-  with `MICROPHONE_BEING_USED`. in a case of unknown error the promise will reject with `FAILED_TO_RECORD`.
-
----
-
-* stopRecording - will stop the recording that has been previously started. if the function `startRecording` has not been called beforehand
-  the promise will reject with `RECORDING_HAS_NOT_STARTED`.
-  if the recording has been stopped immediately after it has been started the promise will reject with `EMPTY_RECORDING`.
-  in a case of unknown error the promise will reject with `FAILED_TO_FETCH_RECORDING`.
-  in case of success, you will get the recording in base-64, the duration of the
-  recording in milliseconds, and the mime type.
-
----
-
-* pauseRecording - will pause an ongoing recording. note that if the recording has not started yet the promise
-  will reject with `RECORDING_HAS_NOT_STARTED`. in case of success the promise will resolve to `{ value: true }` if the pause
-  was successful or `{ value: false }` if the recording is already paused.
-  note that on certain mobile os versions this function is not supported.
-  in these cases the function will reject with `NOT_SUPPORTED_OS_VERSION` and your only viable options is to stop the recording instead.
-
----
-
-* resumeRecording - will resume a paused recording. note that if the recording has not started yet the promise
-  will reject with `RECORDING_HAS_NOT_STARTED`. in case of success the promise will resolve to `{ value: true }` if the resume
-  was successful or `{ value: false }` if the recording is already running.
-  note that on certain mobile os versions this function is not supported.
-  in these cases the function will reject with `NOT_SUPPORTED_OS_VERSION` and your only viable options is to stop the recording instead
-
----
-
-* getCurrentStatus - will let you know the current status of the current recording (if there is any at all).
-  will resolve with one of the following values: `{ status: "NONE" }` if the plugin is idle and waiting to start a new recording.
-  `{ status: "RECORDING" }` if the plugin is in the middle of recording and `{ status: "PAUSED" }` if the recording is paused right now.
-
-## Usage
-
+```typescript
+VoiceRecorder.canDeviceVoiceRecord().then((result: GenericResponse) => console.log(result.value));
 ```
 
-// only 'VoiceRecorder' is mandatory, the rest is for typing
-import { VoiceRecorder, VoiceRecorderPlugin, RecordingData, GenericResponse, CurrentRecordingStatus } from 'capacitor-voice-recorder';
+| Return Value       | Description                                                                            |
+|--------------------|----------------------------------------------------------------------------------------|
+| `{ value: true }`  | The device/browser can record audio.                                                   |
+| `{ value: false }` | The browser cannot record audio. Note: On mobile, it always returns `{ value: true }`. |
 
-// will print true / false based on the ability of the current device (or web browser) to record audio
-VoiceRecorder.canDeviceVoiceRecord().then((result: GenericResponse) => console.log(result.value))
+#### requestAudioRecordingPermission
 
-/**
-* will prompt the user to give the required permission, after that
-* the function will print true / false based on the user response
-*/
-VoiceRecorder.requestAudioRecordingPermission().then((result: GenericResponse) => console.log(result.value))
+Requests audio recording permission from the user.
 
-/**
-* will print true / false based on the status of the recording permission.
-* the promise will reject with "COULD_NOT_QUERY_PERMISSION_STATUS"
-* if the current device cannot query the current status of the recording permission
-*/
-VoiceRecorder.hasAudioRecordingPermission.then((result: GenericResponse) => console.log(result.value))
+```typescript
+VoiceRecorder.requestAudioRecordingPermission().then((result: GenericResponse) => console.log(result.value));
+```
 
-/**
-* In case of success the promise will resolve to { value: true }
-* in case of an error the promise will reject with one of the following messages:
-* "MISSING_PERMISSION", "ALREADY_RECORDING", "MICROPHONE_BEING_USED", "DEVICE_CANNOT_VOICE_RECORD", or "FAILED_TO_RECORD"
-*/
+| Return Value       | Description         |
+|--------------------|---------------------|
+| `{ value: true }`  | Permission granted. |
+| `{ value: false }` | Permission denied.  |
+
+#### hasAudioRecordingPermission
+
+Checks if the audio recording permission has been granted.
+
+```typescript
+VoiceRecorder.hasAudioRecordingPermission().then((result: GenericResponse) => console.log(result.value));
+```
+
+| Return Value                        | Description                        |
+|-------------------------------------|------------------------------------|
+| `{ value: true }`                   | Permission granted.                |
+| `{ value: false }`                  | Permission denied.                 |
+| Error Code                          | Description                        |
+| `COULD_NOT_QUERY_PERMISSION_STATUS` | Failed to query permission status. |
+
+### Managing Recording
+
+#### startRecording
+
+Starts the audio recording.
+
+```typescript
 VoiceRecorder.startRecording()
-.then((result: GenericResponse) => console.log(result.value))
-.catch(error => console.log(error))
-
-/**
-* In case of success the promise will resolve to:
-* {"value": { recordDataBase64: string, msDuration: number, mimeType: string }},
-* the file will be in one of several possible formats (more on that later).
-* in case of an error the promise will reject with one of the following messages:
-* "RECORDING_HAS_NOT_STARTED" or "FAILED_TO_FETCH_RECORDING"
-*/
-VoiceRecorder.stopRecording()
-.then((result: RecordingData) => console.log(result.value))
-.catch(error => console.log(error))
-
-/**
-* will pause an ongoing recording. note that if the recording has not started yet the promise
-* will reject with `RECORDING_HAS_NOT_STARTED`. in case of success the promise will resolve to `{ value: true }` if the pause
-* was successful or `{ value: false }` if the recording is already paused.
-* if the current mobile os does not support this method the promise will reject with `NOT_SUPPORTED_OS_VERSION`
-*/
-VoiceRecorder.pauseRecording()
-.then((result: GenericResponse) => console.log(result.value))
-.catch(error => console.log(error))
-
-/**
-* will resume a paused recording. note that if the recording has not started yet the promise
-* will reject with `RECORDING_HAS_NOT_STARTED`. in case of success the promise will resolve to `{ value: true }` if the resume
-* was successful or `{ value: false }` if the recording is already running.
-* if the current mobile os does not support this method the promise will reject with `NOT_SUPPORTED_OS_VERSION`
-*/
-VoiceRecorder.resumeRecording()
-.then((result: GenericResponse) => console.log(result.value))
-.catch(error => console.log(error))
-
-/**
-* Will return the current status of the plugin.
-* in this example one of these possible values will be printed: "NONE" / "RECORDING" / "PAUSED"
-*/
-VoiceRecorder.getCurrentStatus()
-.then((result: CurrentRecordingStatus) => console.log(result.status))
-.catch(error => console.log(error))
-
+    .then((result: GenericResponse) => console.log(result.value))
+    .catch(error => console.log(error));
 ```
+
+| Return Value      | Description                     |
+|-------------------|---------------------------------|
+| `{ value: true }` | Recording started successfully. |
+
+| Error Code                   | Description                              |
+|------------------------------|------------------------------------------|
+| `MISSING_PERMISSION`         | Required permission is missing.          |
+| `DEVICE_CANNOT_VOICE_RECORD` | Device/browser cannot record audio.      |
+| `ALREADY_RECORDING`          | A recording is already in progress.      |
+| `MICROPHONE_BEING_USED`      | Microphone is being used by another app. |
+| `FAILED_TO_RECORD`           | Unknown error occurred during recording. |
+
+#### stopRecording
+
+Stops the audio recording and returns the recording data.
+
+```typescript
+VoiceRecorder.stopRecording()
+    .then((result: RecordingData) => console.log(result.value))
+    .catch(error => console.log(error));
+```
+
+| Return Value       | Description                                    |
+|--------------------|------------------------------------------------|
+| `recordDataBase64` | The recorded audio data in Base64 format.      |
+| `msDuration`       | The duration of the recording in milliseconds. |
+| `mimeType`         | The MIME type of the recorded audio.           |
+
+| Error Code                  | Description                                          |
+|-----------------------------|------------------------------------------------------|
+| `RECORDING_HAS_NOT_STARTED` | No recording in progress.                            |
+| `EMPTY_RECORDING`           | Recording stopped immediately after starting.        |
+| `FAILED_TO_FETCH_RECORDING` | Unknown error occurred while fetching the recording. |
+
+#### pauseRecording
+
+Pauses the ongoing audio recording.
+
+```typescript
+VoiceRecorder.pauseRecording()
+    .then((result: GenericResponse) => console.log(result.value))
+    .catch(error => console.log(error));
+```
+
+| Return Value       | Description                    |
+|--------------------|--------------------------------|
+| `{ value: true }`  | Recording paused successfully. |
+| `{ value: false }` | Recording is already paused.   |
+
+| Error Code                  | Description                                        |
+|-----------------------------|----------------------------------------------------|
+| `RECORDING_HAS_NOT_STARTED` | No recording in progress.                          |
+| `NOT_SUPPORTED_OS_VERSION`  | Operation not supported on the current OS version. |
+
+#### resumeRecording
+
+Resumes a paused audio recording.
+
+```typescript
+VoiceRecorder.resumeRecording()
+    .then((result: GenericResponse) => console.log(result.value))
+    .catch(error => console.log(error));
+```
+
+| Return Value       | Description                     |
+|--------------------|---------------------------------|
+| `{ value: true }`  | Recording resumed successfully. |
+| `{ value: false }` | Recording is already running.   |
+
+| Error Code                  | Description                                        |
+|-----------------------------|----------------------------------------------------|
+| `RECORDING_HAS_NOT_STARTED` | No recording in progress.                          |
+| `NOT_SUPPORTED_OS_VERSION`  | Operation not supported on the current OS version. |
+
+#### getCurrentStatus
+
+Retrieves the current status of the recorder.
+
+```typescript
+VoiceRecorder.getCurrentStatus()
+    .then((result: CurrentRecordingStatus) => console.log(result.status))
+    .catch(error => console.log(error));
+```
+
+| Status Code | Description                                          |
+|-------------|------------------------------------------------------|
+| `NONE`      | Plugin is idle and waiting to start a new recording. |
+| `RECORDING` | Plugin is currently recording.                       |
+| `PAUSED`    | Recording is paused.                                 |
 
 ## Format and Mime type
 
@@ -198,7 +217,7 @@ as this plugin focuses on the recording aspect, it does not provide any conversi
 
 To play the recorded file you can use plain javascript:
 
-```
+```typescript
 const base64Sound = '...' // from plugin
 const mimeType = '...'  // from plugin
 const audioRef = new Audio(`data:${mimeType};base64,${base64Sound}`)
