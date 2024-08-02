@@ -3,7 +3,7 @@ name: "CI"
 on:
   push:
     branches:
-      - main
+      - master
       - dev
   pull_request:
     branches:
@@ -17,7 +17,7 @@ jobs:
     steps:
       - uses: actions/setup-node@v4
         with:
-          node-version: 18.x
+          node-version: 20.x
       - uses: actions/checkout@v4
       - name: Restore Dependency Cache
         id: cache-modules
@@ -40,7 +40,7 @@ jobs:
       - run: sudo xcode-select --switch /Applications/Xcode_15.0.app
       - uses: actions/setup-node@v4
         with:
-          node-version: 18.x
+          node-version: 20.x
       - uses: actions/checkout@v4
       - name: Restore Dependency Cache
         id: cache-modules
@@ -62,7 +62,7 @@ jobs:
     steps:
       - uses: actions/setup-node@v4
         with:
-          node-version: 18.x
+          node-version: 20.x
       - name: set up JDK 17
         uses: actions/setup-java@v3
         with:
@@ -89,7 +89,7 @@ jobs:
     steps:
       - uses: actions/setup-node@v4
         with:
-          node-version: 18.x
+          node-version: 20.x
       - uses: actions/checkout@v4
       - name: Restore Dependency Cache
         id: cache-modules
@@ -113,7 +113,7 @@ jobs:
     steps:
       - uses: actions/setup-node@v4
         with:
-          node-version: 18.x
+          node-version: 20.x
       - uses: actions/checkout@v4
       - name: Restore Dependency Cache
         id: cache-modules
@@ -140,7 +140,7 @@ jobs:
     steps:
       - uses: actions/setup-node@v4
         with:
-          node-version: 18.x
+          node-version: 20.x
       - uses: actions/checkout@v4
       - name: Restore Dependency Cache
         id: cache-modules
@@ -153,15 +153,7 @@ jobs:
       - run: npm ci
       - run: npm run prepublishOnly
       - name: 'Semantic Release'
-        uses: cycjimmy/semantic-release-action@v4.1.0
-        with:
-          dry_run: ${{ github.event_name == 'pull_request' || github.ref == 'refs/heads/ci' }}
-          extra_plugins: |
-            @semantic-release/changelog@6.0.3
-            @semantic-release/git
-            @saithodev/semantic-release-backmerge@4.0.1
-            conventional-changelog-conventionalcommits@7.0.2
-        id: semantic
+        run: npx semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
