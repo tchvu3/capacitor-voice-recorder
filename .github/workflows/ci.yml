@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - ci
+      - dev
   pull_request:
     branches:
       - '**'
@@ -125,3 +125,43 @@ jobs:
           key: ${{ runner.os }}-dependency-caching-${{ hashFiles('package.json', '*/package.json') }}
       - run: npm ci
       - run: npm run build
+
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # to be able to publish a GitHub release
+      issues: write # to be able to comment on released issues
+      pull-requests: write # to be able to comment on released pull requests
+      id-token: write # to enable use of OIDC for npm provenance
+    timeout-minutes: 30
+    name: "Publish Plugin"
+    needs:
+      - build
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18.x
+      - uses: actions/checkout@v4
+      - name: Restore Dependency Cache
+        id: cache-modules
+        uses: actions/cache@v3
+        with:
+          path: |
+            node_modules
+            */node_modules
+          key: ${{ runner.os }}-dependency-caching-${{ hashFiles('package.json', '*/package.json') }}
+      - run: npm ci
+      - run: npm run prepublishOnly
+      - name: 'Semantic Release'
+        uses: cycjimmy/semantic-release-action@v4.1.0
+        with:
+          dry_run: ${{ github.event_name == 'pull_request' || github.ref == 'refs/heads/ci' }}
+          extra_plugins: |
+            @semantic-release/changelog@6.0.3
+            @semantic-release/git
+            @saithodev/semantic-release-backmerge@4.0.1
+            conventional-changelog-conventionalcommits@7.0.2
+        id: semantic
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
