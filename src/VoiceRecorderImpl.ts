@@ -178,6 +178,7 @@ export class VoiceRecorderImpl {
             try {
                 this.mediaRecorder.stop();
             } catch (ignore) {
+                console.warn('Failed to stop recording during cleanup');
             }
         }
         this.pendingResult = neverResolvingPromise();
