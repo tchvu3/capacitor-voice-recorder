@@ -5,8 +5,15 @@ updates:
     target-branch: "dev"
     schedule:
       interval: "daily"
+
   - package-ecosystem: "gradle"
     directory: "/android"
+    target-branch: "dev"
+    schedule:
+      interval: "daily"
+
+  - package-ecosystem: "github-actions"
+    directory: "/.github/workflows"
     target-branch: "dev"
     schedule:
       interval: "daily"
