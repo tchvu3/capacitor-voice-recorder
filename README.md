@@ -20,7 +20,9 @@ npm install --save @independo/capacitor-voice-recorder
 npx cap sync
 ```
 
-#### Using with iOS
+## Configuration
+
+### Using with iOS
 
 Add the following to your `Info.plist`:
 
@@ -29,26 +31,10 @@ Add the following to your `Info.plist`:
 <string>This app uses the microphone to record audio.</string>
 ```
 
-## Configuration
-
-No configuration required for this plugin.
-
-## Supported methods
-
-| Name                            | Android | iOS | Web |
-|:--------------------------------|:--------|:----|:----|
-| canDeviceVoiceRecord            | ✅       | ✅   | ✅   |
-| requestAudioRecordingPermission | ✅       | ✅   | ✅   |
-| hasAudioRecordingPermission     | ✅       | ✅   | ✅   |
-| startRecording                  | ✅       | ✅   | ✅   |
-| stopRecording                   | ✅       | ✅   | ✅   |
-| pauseRecording                  | ✅       | ✅   | ✅   |
-| resumeRecording                 | ✅       | ✅   | ✅   |
-| getCurrentStatus                | ✅       | ✅   | ✅   |
-
 ## Overview
 
-The `@independo/capacitor-voice-recorder` plugin allows you to record audio on Android, iOS, and Web platforms. Below is a summary
+The `@independo/capacitor-voice-recorder` plugin allows you to record audio on Android, iOS, and Web platforms. Below is
+a summary
 of the key methods and how to use them.
 
 ### Checking Device Capabilities and Permissions
