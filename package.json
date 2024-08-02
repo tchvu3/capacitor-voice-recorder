@@ -1,5 +1,5 @@
 {
-  "name": "capacitor-voice-recorder",
+  "name": "@independo/capacitor-voice-recorder",
   "version": "5.0.0",
   "description": "Capacitor plugin for voice recording",
   "main": "dist/plugin.cjs.js",
@@ -13,17 +13,27 @@
     "ios/Plugin/",
     "CapacitorVoiceRecorder.podspec"
   ],
-  "author": {
-    "name": "Avihu Harush",
-    "email": "tchvu3@gmail.com"
-  },
+  "contributors": [
+    {
+      "name": "Avihu Harush",
+      "email": "tchvu3@gmail.com"
+    },
+    {
+      "name": "Independo GmbH",
+      "email": "admin@independo.app"
+    }
+  ],
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tchvu3/capacitor-voice-recorder.git"
+    "url": "git+https://github.com/independo-gmbh/capacitor-voice-recorder"
   },
   "bugs": {
-    "url": "https://github.com/tchvu3/capacitor-voice-recorder/issues"
+    "url": "https://github.com/independo-gmbh/capacitor-voice-recorder/issues"
+  },
+  "publishConfig": {
+    "provenance": true,
+    "access": "public"
   },
   "keywords": [
     "capacitor",
@@ -69,6 +79,7 @@
     "prettier-plugin-java": "~2.1.0",
     "rimraf": "^5.0.0",
     "rollup": "^3.21.7",
+    "semantic-release": "^24.0.0",
     "swiftlint": "^1.0.2",
     "typescript": "<4.5.0"
   },

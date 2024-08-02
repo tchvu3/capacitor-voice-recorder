@@ -2,34 +2,32 @@
   <img src="https://user-images.githubusercontent.com/236501/85893648-1c92e880-b7a8-11ea-926d-95355b8175c7.png" width="128" height="128" />
 </p>
 <h3 align="center">Capacitor Voice Recorder</h3>
-<p align="center"><strong><code>tchvu3/capacitor-voice-recorder</code></strong></p>
-<p align="center">Capacitor plugin for simple voice recording (For Capacitor 5)</p>
+<p align="center"><strong><code>@independo/capacitor-voice-recorder</code></strong></p>
+<p align="center">Capacitor plugin for audio recording</p>
 
 <p align="center">
-  <img src="https://img.shields.io/maintenance/yes/2023" />
-  <a href="https://www.npmjs.com/package/capacitor-voice-recorder"><img src="https://img.shields.io/npm/l/capacitor-voice-recorder" /></a>
+  <img src="https://img.shields.io/maintenance/yes/2024" />
+  <a href="https://www.npmjs.com/package/@independo/capacitor-voice-recorder"><img src="https://img.shields.io/npm/l/@independo/capacitor-voice-recorder" /></a>
 <br>
-  <a href="https://www.npmjs.com/package/capacitor-voice-recorder"><img src="https://img.shields.io/npm/dw/capacitor-voice-recorder" /></a>
-  <a href="https://www.npmjs.com/package/capacitor-voice-recorder"><img src="https://img.shields.io/npm/v/capacitor-voice-recorder" /></a>
+  <a href="https://www.npmjs.com/package/@independo/capacitor-voice-recorder"><img src="https://img.shields.io/npm/dw/@independo/capacitor-voice-recorder" /></a>
+  <a href="https://www.npmjs.com/package/@independo/capacitor-voice-recorder"><img src="https://img.shields.io/npm/v/@independo/capacitor-voice-recorder" /></a>
 </p>
-
-## Maintainers
-
-| Maintainer   | GitHub                              |
-|--------------|-------------------------------------|
-| Avihu Harush | [tchvu3](https://github.com/tchvu3) |
 
 ## Installation
 
 ```
-npm install --save capacitor-voice-recorder
+npm install --save @independo/capacitor-voice-recorder
 npx cap sync
 ```
 
-#### ios note
+#### Using with iOS
 
-Make sure to include the ```NSMicrophoneUsageDescription```
-key, and a corresponding purpose string in your app's Info.plist
+Add the following to your `Info.plist`:
+
+```xml
+<key>NSMicrophoneUsageDescription</key>
+<string>This app uses the microphone to record audio.</string>
+```
 
 ## Configuration
 
@@ -50,7 +48,7 @@ No configuration required for this plugin.
 
 ## Overview
 
-The `capacitor-voice-recorder` plugin allows you to record audio on Android, iOS, and Web platforms. Below is a summary
+The `@independo/capacitor-voice-recorder` plugin allows you to record audio on Android, iOS, and Web platforms. Below is a summary
 of the key methods and how to use them.
 
 ### Checking Device Capabilities and Permissions
@@ -225,8 +223,10 @@ audioRef.oncanplaythrough = () => audioRef.play()
 audioRef.load()
 ```
 
-## Donation
+## Collaborators
 
-If you enjoy my work and find it useful, feel free to invite me to a cup of coffee :)
+| Collaborators      |                                                             | GitHub                                    | Donation                                                                                                                          |
+|--------------------|-------------------------------------------------------------|-------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------|
+| Avihu Harush       | Original Author                                             | [tchvu3](https://github.com/tchvu3)       | [!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/tchvu3) |
+| Konstantin Strümpf | Contributor for [Independo GmbH](https://www.independo.app) | [kstruempf](https://github.com/kstruempf) |                                                                                                                                   |
 
-[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/tchvu3)

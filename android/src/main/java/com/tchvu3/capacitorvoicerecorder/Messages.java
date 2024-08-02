@@ -11,5 +11,4 @@ public abstract class Messages {
     public static final String ALREADY_RECORDING = "ALREADY_RECORDING";
     public static final String EMPTY_RECORDING = "EMPTY_RECORDING";
     public static final String MICROPHONE_BEING_USED = "MICROPHONE_BEING_USED";
-
 }

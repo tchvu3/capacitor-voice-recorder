@@ -1,0 +1,209 @@
+{
+  "branches": [
+    {
+      "name": "main",
+      "prerelease": false
+    },
+    {
+      "name": "dev",
+      "prerelease": true
+    }
+  ],
+  "plugins": [
+    [
+      "@semantic-release/commit-analyzer",
+      {
+        "releaseRules": [
+          {
+            "breaking": true,
+            "release": "major"
+          },
+          {
+            "type": "revert",
+            "scope": "*",
+            "release": "patch"
+          },
+          {
+            "type": "docs",
+            "scope": "*",
+            "release": "patch"
+          },
+          {
+            "type": "style",
+            "scope": "*",
+            "release": "patch"
+          },
+          {
+            "type": "chore",
+            "scope": "*",
+            "release": "patch"
+          },
+          {
+            "type": "refactor",
+            "scope": "*",
+            "release": "patch"
+          },
+          {
+            "type": "test",
+            "scope": "*",
+            "release": "patch"
+          },
+          {
+            "type": "build",
+            "scope": "*",
+            "release": "patch"
+          },
+          {
+            "type": "ci",
+            "scope": "*",
+            "release": "patch"
+          },
+          {
+            "type": "build",
+            "scope": "*",
+            "release": "patch"
+          },
+          {
+            "type": "improvement",
+            "scope": "*",
+            "release": "patch"
+          },
+          {
+            "type": "perf",
+            "scope": "*",
+            "release": "patch"
+          },
+          {
+            "type": "feat",
+            "release": "minor"
+          },
+          {
+            "type": "fix",
+            "release": "patch"
+          }
+        ],
+        "parserOpts": {
+          "noteKeywords": [
+            "BREAKING CHANGE",
+            "BREAKING CHANGES"
+          ]
+        }
+      }
+    ],
+    [
+      "@semantic-release/release-notes-generator",
+      {
+        "preset": "conventionalcommits",
+        "presetConfig": {
+          "types": [
+            {
+              "type": "feat",
+              "section": "Features \uD83D\uDE80",
+              "hidden": false
+            },
+            {
+              "type": "fix",
+              "section": "Bug Fixes \uD83D\uDEE0\uFE0F",
+              "hidden": false
+            },
+            {
+              "type": "perf",
+              "section": "Performance Improvements \uD83D\uDCAA",
+              "hidden": false
+            },
+            {
+              "type": "improvement",
+              "section": "Improvements \uD83D\uDEE0\uFE0F",
+              "hidden": false
+            },
+            {
+              "type": "revert",
+              "section": "Reverts \uD83D\uDD19",
+              "hidden": false
+            },
+            {
+              "type": "docs",
+              "section": "Documentation \uD83D\uDCDA",
+              "hidden": false
+            },
+            {
+              "type": "style",
+              "section": "Styles \uD83D\uDC85",
+              "hidden": false
+            },
+            {
+              "type": "chore",
+              "section": "Miscellaneous Chores \uD83D\uDEE0\uFE0F",
+              "hidden": true
+            },
+            {
+              "type": "wip",
+              "section": "Work In Progress \uD83D\uDEE0\uFE0F",
+              "hidden": true
+            },
+            {
+              "type": "refactor",
+              "section": "Code Refactors \uD83C\uDFD7\uFE0F",
+              "hidden": false
+            },
+            {
+              "type": "test",
+              "section": "Tests \uD83D\uDEE0\uFE0F",
+              "hidden": false
+            },
+            {
+              "type": "build",
+              "section": "Build System \uD83D\uDEE0\uFE0F",
+              "hidden": false
+            },
+            {
+              "type": "ci",
+              "section": "CI/CD \uD83D\uDC77\u200D♀\uFE0F",
+              "hidden": false
+            },
+            {
+              "type": "improvement",
+              "section": "Improvements \uD83D\uDEE0\uFE0F",
+              "hidden": false
+            },
+            {
+              "type": "BREAKING CHANGE",
+              "section": "BREAKING CHANGES \uD83D\uDEA8",
+              "hidden": false
+            },
+            {
+              "type": "fire",
+              "section": "Hotfixes \uD83D\uDD25",
+              "hidden": false
+            }
+          ]
+        }
+      }
+    ],
+    [
+      "@semantic-release/npm",
+      {
+        "npmPublish": true
+      }
+    ],
+    "@semantic-release/git",
+    [
+      "@semantic-release/github",
+      {
+        "successComment": false,
+        "failTitle": false
+      }
+    ],
+    [
+      "@saithodev/semantic-release-backmerge",
+      {
+        "backmergeBranches": [
+          {
+            "from": "main",
+            "to": "dev"
+          }
+        ]
+      }
+    ]
+  ]
+}
