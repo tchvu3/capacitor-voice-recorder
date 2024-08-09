@@ -13,6 +13,7 @@ import {
     recordingHasNotStartedError,
     successResponse,
 } from './predefined-web-responses';
+import {RecordingStatus} from "./definitions";
 
 // these mime types will be checked one by one in order until one of them is found to be supported by the current browser
 const possibleMimeTypes = ['audio/aac', 'audio/webm;codecs=opus', 'audio/mp4', 'audio/webm', 'audio/ogg;codecs=opus'];
@@ -108,13 +109,13 @@ export class VoiceRecorderImpl {
 
     public getCurrentStatus(): Promise<CurrentRecordingStatus> {
         if (this.mediaRecorder == null) {
-            return Promise.resolve({status: 'NONE'});
+            return Promise.resolve({status: RecordingStatus.NONE});
         } else if (this.mediaRecorder.state === 'recording') {
-            return Promise.resolve({status: 'RECORDING'});
+            return Promise.resolve({status: RecordingStatus.RECORDING});
         } else if (this.mediaRecorder.state === 'paused') {
-            return Promise.resolve({status: 'PAUSED'});
+            return Promise.resolve({status: RecordingStatus.PAUSED});
         } else {
-            return Promise.resolve({status: 'NONE'});
+            return Promise.resolve({status: RecordingStatus.NONE});
         }
     }
 

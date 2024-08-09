@@ -1,10 +1,10 @@
-export type Base64String = string
+export type Base64String = string;
 
 export interface RecordingData {
   value: {
-    recordDataBase64: Base64String
-    msDuration: number
-    mimeType: string
+    recordDataBase64: Base64String;
+    msDuration: number;
+    mimeType: string;
   };
 }
 
@@ -12,25 +12,30 @@ export interface GenericResponse {
   value: boolean;
 }
 
+export const RecordingStatus = {
+  RECORDING: 'RECORDING',
+  PAUSED: 'PAUSED',
+  NONE: 'NONE',
+} as const;
+
 export interface CurrentRecordingStatus {
-  status: 'RECORDING' | 'PAUSED' | 'NONE';
+  status: (typeof RecordingStatus)[keyof typeof RecordingStatus];
 }
 
 export interface VoiceRecorderPlugin {
-  canDeviceVoiceRecord (): Promise<GenericResponse>;
+  canDeviceVoiceRecord(): Promise<GenericResponse>;
 
-  requestAudioRecordingPermission (): Promise<GenericResponse>;
+  requestAudioRecordingPermission(): Promise<GenericResponse>;
 
-  hasAudioRecordingPermission (): Promise<GenericResponse>;
+  hasAudioRecordingPermission(): Promise<GenericResponse>;
 
-  startRecording (): Promise<GenericResponse>;
+  startRecording(): Promise<GenericResponse>;
 
-  stopRecording (): Promise<RecordingData>;
+  stopRecording(): Promise<RecordingData>;
 
-  pauseRecording (): Promise<GenericResponse>;
+  pauseRecording(): Promise<GenericResponse>;
 
-  resumeRecording (): Promise<GenericResponse>;
+  resumeRecording(): Promise<GenericResponse>;
 
-  getCurrentStatus (): Promise<CurrentRecordingStatus>;
-
+  getCurrentStatus(): Promise<CurrentRecordingStatus>;
 }
