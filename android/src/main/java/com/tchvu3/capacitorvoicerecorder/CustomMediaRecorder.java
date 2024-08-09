@@ -3,7 +3,6 @@ package com.tchvu3.capacitorvoicerecorder;
 import android.content.Context;
 import android.media.MediaRecorder;
 import android.os.Build;
-
 import java.io.File;
 import java.io.IOException;
 
@@ -102,9 +101,7 @@ public class CustomMediaRecorder {
         } catch (Exception exp) {
             return exp.getMessage().startsWith("stop failed");
         } finally {
-            if (tempMediaRecorder != null)
-                tempMediaRecorder.deleteOutputFile();
+            if (tempMediaRecorder != null) tempMediaRecorder.deleteOutputFile();
         }
     }
-
 }

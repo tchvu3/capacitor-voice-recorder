@@ -8,8 +8,7 @@ public class RecordData {
     private String mimeType;
     private int msDuration;
 
-    public RecordData() {
-    }
+    public RecordData() {}
 
     public RecordData(String recordDataBase64, int msDuration, String mimeType) {
         this.recordDataBase64 = recordDataBase64;
