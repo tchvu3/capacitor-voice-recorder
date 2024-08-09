@@ -67,6 +67,17 @@ export class VoiceRecorderImpl {
     }
 
     public static async hasAudioRecordingPermission(): Promise<GenericResponse> {
+        if (navigator.permissions.query == null) {
+            if (navigator.mediaDevices == null) {
+                return Promise.reject(couldNotQueryPermissionStatusError());
+            }
+            return navigator.mediaDevices.getUserMedia({audio: true})
+                .then(() => successResponse())
+                .catch(() => {
+                    throw couldNotQueryPermissionStatusError()
+                });
+        }
+
         return navigator.permissions.query({name: 'microphone' as any})
             .then(result => ({value: result.state === 'granted'}))
             .catch(() => {
