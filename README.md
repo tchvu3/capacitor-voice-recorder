@@ -96,7 +96,9 @@ VoiceRecorder.hasAudioRecordingPermission().then((result: GenericResponse) => co
 |-------------------------------------|------------------------------------|
 | `{ value: true }`                   | Permission granted.                |
 | `{ value: false }`                  | Permission denied.                 |
+
 | Error Code                          | Description                        |
+|-------------------------------------|------------------------------------|
 | `COULD_NOT_QUERY_PERMISSION_STATUS` | Failed to query permission status. |
 
 ### Managing Recording
