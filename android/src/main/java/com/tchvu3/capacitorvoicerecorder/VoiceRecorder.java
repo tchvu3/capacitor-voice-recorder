@@ -5,6 +5,8 @@ import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.util.Base64;
+import android.util.Base64OutputStream;
+
 import com.getcapacitor.PermissionState;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
@@ -13,8 +15,10 @@ import com.getcapacitor.annotation.CapacitorPlugin;
 import com.getcapacitor.annotation.Permission;
 import com.getcapacitor.annotation.PermissionCallback;
 import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 @CapacitorPlugin(
@@ -88,30 +92,66 @@ public class VoiceRecorder extends Plugin {
 
     @PluginMethod
     public void stopRecording(PluginCall call) {
-        if (mediaRecorder == null) {
-            call.reject(Messages.RECORDING_HAS_NOT_STARTED);
-            return;
-        }
+      if (mediaRecorder == null) {
+        call.reject(Messages.RECORDING_HAS_NOT_STARTED);
+        return;
+      }
 
-        try {
-            mediaRecorder.stopRecording();
-            File recordedFile = mediaRecorder.getOutputFile();
-            RecordData recordData = new RecordData(
-                readRecordedFileAsBase64(recordedFile),
-                getMsDurationOfAudioFile(recordedFile.getAbsolutePath()),
-                "audio/aac"
-            );
-            if (recordData.getRecordDataBase64() == null || recordData.getMsDuration() < 0) {
-                call.reject(Messages.EMPTY_RECORDING);
-            } else {
-                call.resolve(ResponseGenerator.dataResponse(recordData.toJSObject()));
+      try {
+        mediaRecorder.stopRecording();
+        File recordedFile = mediaRecorder.getOutputFile();
+        String filePath = call.getString("filePath");
+
+        if (filePath != null) {
+            File dataFolder = new File(getContext().getFilesDir(), "");
+            if (!dataFolder.exists()) {
+              dataFolder.mkdirs();
             }
-        } catch (Exception exp) {
-            call.reject(Messages.FAILED_TO_FETCH_RECORDING, exp);
-        } finally {
-            mediaRecorder.deleteOutputFile();
-            mediaRecorder = null;
+
+            File destinationFile = new File(dataFolder, filePath);
+            File parentFolder = destinationFile.getParentFile();
+            if (parentFolder != null && !parentFolder.exists()) {
+              parentFolder.mkdirs();
+            }
+
+            try (FileInputStream inStream = new FileInputStream(recordedFile);
+               FileOutputStream outStream = new FileOutputStream(destinationFile)) {
+              byte[] buffer = new byte[1024];
+              int length;
+              while ((length = inStream.read(buffer)) > 0) {
+                outStream.write(buffer, 0, length);
+              }
+              RecordData recordData = new RecordData(
+                null,
+                getMsDurationOfAudioFile(destinationFile.getAbsolutePath()),
+                "audio/aac",
+                destinationFile.getAbsolutePath()
+              );
+              System.out.println("Recorded file path: " + destinationFile.getAbsolutePath());
+              System.out.println("Recorded file: " + recordData.getPath());
+              call.resolve(ResponseGenerator.dataResponse(recordData.toJSObject()));
+            } catch (IOException e) {
+              call.reject(Messages.FAILED_TO_SAVE_RECORDING, e);
+            }
+        } else {
+          RecordData recordData = new RecordData(
+            readRecordedFileAsBase64(recordedFile),
+            getMsDurationOfAudioFile(recordedFile.getAbsolutePath()),
+            "audio/aac",
+            null
+          );
+          if (recordData.getRecordDataBase64() == null || recordData.getMsDuration() < 0) {
+            call.reject(Messages.EMPTY_RECORDING);
+          } else {
+            call.resolve(ResponseGenerator.dataResponse(recordData.toJSObject()));
+          }
         }
+      } catch (Exception exp) {
+        call.reject(Messages.FAILED_TO_FETCH_RECORDING, exp);
+      } finally {
+        mediaRecorder.deleteOutputFile();
+        mediaRecorder = null;
+      }
     }
 
     @PluginMethod
@@ -154,16 +194,21 @@ public class VoiceRecorder extends Plugin {
     }
 
     private String readRecordedFileAsBase64(File recordedFile) {
-        BufferedInputStream bufferedInputStream;
-        byte[] bArray = new byte[(int) recordedFile.length()];
-        try {
-            bufferedInputStream = new BufferedInputStream(new FileInputStream(recordedFile));
-            bufferedInputStream.read(bArray);
-            bufferedInputStream.close();
-        } catch (IOException exp) {
-            return null;
+      try (FileInputStream fileInputStream = new FileInputStream(recordedFile);
+         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+         Base64OutputStream base64OutputStream = new Base64OutputStream(byteArrayOutputStream, Base64.NO_WRAP)) {
+
+        byte[] buffer = new byte[8192];
+        int bytesRead;
+        while ((bytesRead = fileInputStream.read(buffer)) != -1) {
+          base64OutputStream.write(buffer, 0, bytesRead);
         }
-        return Base64.encodeToString(bArray, Base64.DEFAULT);
+
+        base64OutputStream.close();
+        return byteArrayOutputStream.toString("UTF-8");
+      } catch (IOException exp) {
+        return null;
+      }
     }
 
     private int getMsDurationOfAudioFile(String recordedFilePath) {
