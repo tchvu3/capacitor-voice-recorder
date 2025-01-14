@@ -1,7 +1,13 @@
 import { WebPlugin } from '@capacitor/core';
 
 import { VoiceRecorderImpl } from './VoiceRecorderImpl';
-import type { CurrentRecordingStatus, GenericResponse, RecordingData, VoiceRecorderPlugin } from './definitions';
+import type {
+  CurrentRecordingStatus,
+  GenericResponse,
+  RecordingData,
+  RecordingOptions,
+  VoiceRecorderPlugin
+} from './definitions';
 
 export class VoiceRecorderWeb extends WebPlugin implements VoiceRecorderPlugin {
   private voiceRecorderInstance = new VoiceRecorderImpl();
@@ -18,8 +24,8 @@ export class VoiceRecorderWeb extends WebPlugin implements VoiceRecorderPlugin {
     return VoiceRecorderImpl.requestAudioRecordingPermission();
   }
 
-  public startRecording(): Promise<GenericResponse> {
-    return this.voiceRecorderInstance.startRecording();
+  public startRecording(options: RecordingOptions): Promise<GenericResponse> {
+    return this.voiceRecorderInstance.startRecording(options);
   }
 
   public stopRecording(): Promise<RecordingData> {

@@ -1,7 +1,13 @@
 import getBlobDuration from 'get-blob-duration';
 
 import { RecordingStatus } from './definitions';
-import type { Base64String, CurrentRecordingStatus, GenericResponse, RecordingData } from './definitions';
+import type {
+  Base64String,
+  CurrentRecordingStatus,
+  GenericResponse,
+  RecordingData,
+  RecordingOptions
+} from './definitions';
 import {
   alreadyRecordingError,
   couldNotQueryPermissionStatusError,
@@ -32,7 +38,7 @@ export class VoiceRecorderImpl {
     }
   }
 
-  public async startRecording(): Promise<GenericResponse> {
+  public async startRecording(options: RecordingOptions = { encoding: 'base64' }): Promise<GenericResponse> {
     if (this.mediaRecorder != null) {
       throw alreadyRecordingError();
     }
@@ -47,7 +53,7 @@ export class VoiceRecorderImpl {
 
     return navigator.mediaDevices
       .getUserMedia({ audio: true })
-      .then(this.onSuccessfullyStartedRecording.bind(this))
+      .then(stream => this.onSuccessfullyStartedRecording(stream, options))
       .catch(this.onFailedToStartRecording.bind(this));
   }
 
@@ -139,7 +145,7 @@ export class VoiceRecorderImpl {
     return foundSupportedType ?? null;
   }
 
-  private onSuccessfullyStartedRecording(stream: MediaStream): GenericResponse {
+  private onSuccessfullyStartedRecording(stream: MediaStream, options: RecordingOptions): GenericResponse {
     this.pendingResult = new Promise((resolve, reject) => {
       this.mediaRecorder = new MediaRecorder(stream);
       this.mediaRecorder.onerror = () => {
@@ -159,10 +165,21 @@ export class VoiceRecorderImpl {
           reject(emptyRecordingError());
           return;
         }
-        const recordDataBase64 = await VoiceRecorderImpl.blobToBase64(blobVoiceRecording);
+
+        let data: Base64String | Blob = blobVoiceRecording
+        if (options.encoding === 'base64') {
+          data = await VoiceRecorderImpl.blobToBase64(blobVoiceRecording);
+        }
         const recordingDuration = await getBlobDuration(blobVoiceRecording);
         this.prepareInstanceForNextOperation();
-        resolve({ value: { recordDataBase64, mimeType, msDuration: recordingDuration * 1000 } });
+        resolve({
+          value: {
+            data,
+            mimeType,
+            msDuration: recordingDuration * 1000,
+            recordDataBase64: typeof data === 'string' ? data : undefined,
+          }
+        });
       };
       this.mediaRecorder.ondataavailable = (event: any) => this.chunks.push(event.data);
       this.mediaRecorder.start();

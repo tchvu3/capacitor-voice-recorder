@@ -2,10 +2,15 @@ export type Base64String = string;
 
 export interface RecordingData {
   value: {
-    recordDataBase64: Base64String;
+    data: Base64String | Blob;
     msDuration: number;
     mimeType: string;
+    recordDataBase64?: Base64String;
   };
+}
+
+export interface RecordingOptions {
+  encoding: 'base64' | 'blob'
 }
 
 export interface GenericResponse {
@@ -29,7 +34,7 @@ export interface VoiceRecorderPlugin {
 
   hasAudioRecordingPermission(): Promise<GenericResponse>;
 
-  startRecording(): Promise<GenericResponse>;
+  startRecording(options: RecordingOptions): Promise<GenericResponse>;
 
   stopRecording(): Promise<RecordingData>;
 
