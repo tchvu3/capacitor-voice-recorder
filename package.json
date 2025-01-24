@@ -53,6 +53,7 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
+    "capacitor-blob-writer": "^1.1.19",
     "get-blob-duration": "^1.2.0"
   },
   "devDependencies": {
@@ -73,7 +74,8 @@
     "typescript": "<4.5.0"
   },
   "peerDependencies": {
-    "@capacitor/core": "^6.0.0"
+    "@capacitor/core": "^6.0.0",
+    "@capacitor/filesystem": "^6.0.0"
   },
   "prettier": "@ionic/prettier-config",
   "swiftlint": "@ionic/swiftlint-config",
