@@ -1,12 +1,22 @@
+import type { Directory } from '@capacitor/filesystem';
+
 export type Base64String = string;
 
 export interface RecordingData {
   value: {
-    recordDataBase64: Base64String;
+    recordDataBase64?: Base64String;
     msDuration: number;
     mimeType: string;
+    uri?: string;
   };
 }
+
+export type RecordingOptions =
+  | never
+  | {
+      directory: Directory;
+      subDirectory?: string;
+    };
 
 export interface GenericResponse {
   value: boolean;
@@ -29,7 +39,7 @@ export interface VoiceRecorderPlugin {
 
   hasAudioRecordingPermission(): Promise<GenericResponse>;
 
-  startRecording(): Promise<GenericResponse>;
+  startRecording(options: RecordingOptions): Promise<GenericResponse>;
 
   stopRecording(): Promise<RecordingData>;
 
