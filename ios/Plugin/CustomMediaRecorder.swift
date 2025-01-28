@@ -2,25 +2,25 @@ import Foundation
 import AVFoundation
 
 class CustomMediaRecorder {
-    
+
     private var recordingSession: AVAudioSession!
     private var audioRecorder: AVAudioRecorder!
     private var audioFilePath: URL!
     private var originalRecordingSessionCategory: AVAudioSession.Category!
     private var status = CurrentRecordingStatus.NONE
-    
+
     private let settings = [
         AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
         AVSampleRateKey: 44100,
         AVNumberOfChannelsKey: 1,
         AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue
     ]
-    
+
     private func getDirectoryToSaveAudioFile() -> URL {
         return URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
     }
-    
-    public func startRecording() -> Bool {
+
+    func startRecording() -> Bool {
         do {
             recordingSession = AVAudioSession.sharedInstance()
             originalRecordingSessionCategory = recordingSession.category
@@ -35,8 +35,8 @@ class CustomMediaRecorder {
             return false
         }
     }
-    
-    public func stopRecording() {
+
+    func stopRecording() {
         do {
             audioRecorder.stop()
             try recordingSession.setActive(false)
@@ -47,13 +47,13 @@ class CustomMediaRecorder {
             status = CurrentRecordingStatus.NONE
         } catch {}
     }
-    
-    public func getOutputFile() -> URL {
+
+    func getOutputFile() -> URL {
         return audioFilePath
     }
-    
-    public func pauseRecording() -> Bool {
-        if(status == CurrentRecordingStatus.RECORDING) {
+
+    func pauseRecording() -> Bool {
+        if status == CurrentRecordingStatus.RECORDING {
             audioRecorder.pause()
             status = CurrentRecordingStatus.PAUSED
             return true
@@ -61,9 +61,9 @@ class CustomMediaRecorder {
             return false
         }
     }
-    
-    public func resumeRecording() -> Bool {
-        if(status == CurrentRecordingStatus.PAUSED) {
+
+    func resumeRecording() -> Bool {
+        if status == CurrentRecordingStatus.PAUSED {
             audioRecorder.record()
             status = CurrentRecordingStatus.RECORDING
             return true
@@ -71,9 +71,9 @@ class CustomMediaRecorder {
             return false
         }
     }
-    
-    public func getCurrentStatus() -> CurrentRecordingStatus {
+
+    func getCurrentStatus() -> CurrentRecordingStatus {
         return status
     }
-    
+
 }

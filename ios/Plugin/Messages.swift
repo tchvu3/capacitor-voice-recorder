@@ -1,8 +1,7 @@
 import Foundation
 
-
 struct Messages {
-    
+
     static let MISSING_PERMISSION = "MISSING_PERMISSION"
     static let CANNOT_RECORD_ON_THIS_PHONE = "CANNOT_RECORD_ON_THIS_PHONE"
     static let FAILED_TO_RECORD = "FAILED_TO_RECORD"
@@ -11,5 +10,5 @@ struct Messages {
     static let EMPTY_RECORDING = "EMPTY_RECORDING"
     static let ALREADY_RECORDING = "ALREADY_RECORDING"
     static let MICROPHONE_BEING_USED = "MICROPHONE_BEING_USED"
-    
+
 }

@@ -1,28 +1,28 @@
 import Foundation
 
 struct ResponseGenerator {
-    
+
     private static let VALUE_RESPONSE_KEY = "value"
     private static let STATUS_RESPONSE_KEY = "status"
-    
-    public static func fromBoolean(_ value: Bool) -> Dictionary<String, Bool> {
+
+    static func fromBoolean(_ value: Bool) -> [String: Bool] {
         return value ? successResponse() : failResponse()
     }
-    
-    public static func successResponse() -> Dictionary<String, Bool> {
+
+    static func successResponse() -> [String: Bool] {
         return [VALUE_RESPONSE_KEY: true]
     }
-    
-    public static func failResponse() -> Dictionary<String, Bool> {
+
+    static func failResponse() -> [String: Bool] {
         return [VALUE_RESPONSE_KEY: false]
     }
-    
-    public static func dataResponse(_ data: Any) -> Dictionary<String, Any> {
+
+    static func dataResponse(_ data: Any) -> [String: Any] {
         return [VALUE_RESPONSE_KEY: data]
     }
-    
-    public static func statusResponse(_ data: CurrentRecordingStatus) -> Dictionary<String, String> {
+
+    static func statusResponse(_ data: CurrentRecordingStatus) -> [String: String] {
         return [STATUS_RESPONSE_KEY: data.rawValue]
     }
-    
+
 }
