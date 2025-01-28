@@ -1,17 +1,20 @@
 import Foundation
 
-struct RecordData {
+public struct RecordData {
+    public let recordDataBase64: String?
+    public let uri: String?
+    public let mimeType: String
+    public let msDuration: Int
 
-    let recordDataBase64: String?
-    let mimeType: String
-    let msDuration: Int
-
-    func toDictionary() -> [String: Any] {
-        return [
-            "recordDataBase64": recordDataBase64 ?? "",
+    public func toDictionary() -> [String: Any] {
+        var dict: [String: Any] = [
+            "mimeType": mimeType,
             "msDuration": msDuration,
-            "mimeType": mimeType
+            "recordDataBase64": recordDataBase64 ?? ""
         ]
+        if let uri = uri {
+            dict["uri"] = uri
+        }
+        return dict
     }
-
 }

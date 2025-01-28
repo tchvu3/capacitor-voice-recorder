@@ -5,6 +5,16 @@ import Capacitor
 @objc(VoiceRecorder)
 public class VoiceRecorder: CAPPlugin {
 
+    private struct RecordOptionsRequest {
+        let directory: String?
+        let subDirectory: String?
+
+        init(from call: CAPPluginCall) {
+            self.directory = call.getString("directory")
+            self.subDirectory = call.getString("subDirectory")
+        }
+    }
+
     private var customMediaRecorder: CustomMediaRecorder?
 
     @objc func canDeviceVoiceRecord(_ call: CAPPluginCall) {
@@ -42,7 +52,14 @@ public class VoiceRecorder: CAPPlugin {
             return
         }
 
-        let successfullyStartedRecording = customMediaRecorder!.startRecording()
+        // Parse options from call
+        let options = RecordOptionsRequest(from: call)
+        let recordOptions = CustomMediaRecorder.RecordOptions(
+            directory: options.directory,
+            subDirectory: options.subDirectory
+        )
+
+        let successfullyStartedRecording = customMediaRecorder!.startRecording(options: recordOptions)
         if successfullyStartedRecording == false {
             customMediaRecorder = nil
             call.reject(Messages.CANNOT_RECORD_ON_THIS_PHONE)
@@ -65,13 +82,17 @@ public class VoiceRecorder: CAPPlugin {
             call.reject(Messages.FAILED_TO_FETCH_RECORDING)
             return
         }
+
+        let wasRecordedToFile = customMediaRecorder?.wasRecordedToFile() ?? false
         let recordData = RecordData(
-            recordDataBase64: readFileAsBase64(audioFileUrl),
+            recordDataBase64: wasRecordedToFile ? nil : readFileAsBase64(audioFileUrl),
+            uri: wasRecordedToFile ? audioFileUrl?.path : nil,
             mimeType: "audio/aac",
             msDuration: getMsDurationOfAudioFile(audioFileUrl)
         )
+
         customMediaRecorder = nil
-        if recordData.recordDataBase64 == nil || recordData.msDuration < 0 {
+        if (!wasRecordedToFile && recordData.recordDataBase64 == nil) || recordData.msDuration < 0 {
             call.reject(Messages.EMPTY_RECORDING)
         } else {
             call.resolve(ResponseGenerator.dataResponse(recordData.toDictionary()))
