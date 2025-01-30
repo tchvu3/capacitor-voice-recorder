@@ -36,8 +36,8 @@ public class CustomMediaRecorder {
 
     private void setRecorderOutputFile() throws IOException {
         File outputDir = context.getCacheDir();
-        String directory = options.directory();
-        String subDirectory = options.subDirectory();
+        String directory = options.getDirectory();
+        String subDirectory = options.getSubDirectory();
 
         if (directory != null) {
             outputDir = this.getDirectory(directory);

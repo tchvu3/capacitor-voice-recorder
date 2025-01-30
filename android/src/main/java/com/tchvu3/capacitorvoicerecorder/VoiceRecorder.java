@@ -104,7 +104,7 @@ public class VoiceRecorder extends Plugin {
 
             String recordDataBase64 = null;
             String uri = null;
-            if (options.directory() != null) {
+            if (options.getDirectory() != null) {
                 uri = Uri.fromFile(recordedFile).toString();
             } else {
                 recordDataBase64 = readRecordedFileAsBase64(recordedFile);
@@ -125,7 +125,7 @@ public class VoiceRecorder extends Plugin {
             call.reject(Messages.FAILED_TO_FETCH_RECORDING, exp);
         } finally {
             RecordOptions options = mediaRecorder.getRecordOptions();
-            if (options.directory() == null) {
+            if (options.getDirectory() == null) {
                 mediaRecorder.deleteOutputFile();
             }
 
