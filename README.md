@@ -108,11 +108,19 @@ VoiceRecorder.hasAudioRecordingPermission().then((result: GenericResponse) => co
 
 Start the audio recording.
 
+Optional options can be used with this method to save the file in the device's filesystem and return a uri to that file instead of a base64 string.
+This greatly increases performance for large files.
+
 ```typescript
-VoiceRecorder.startRecording()
+VoiceRecorder.startRecording(options?: RecordingOptions)
     .then((result: GenericResponse) => console.log(result.value))
     .catch(error => console.log(error));
 ```
+
+| Option            | Description                                                                                          |
+|-------------------|------------------------------------------------------------------------------------------------------|
+| directory         | Specifies a Capacitor Filesystem [Directory](https://capacitorjs.com/docs/apis/filesystem#directory) |
+| subDirectory      | Specifies a custom sub-directory (optional)                                                          |
 
 | Return Value      | Description                     |
 |-------------------|---------------------------------|
@@ -130,6 +138,8 @@ VoiceRecorder.startRecording()
 
 Stops the audio recording and returns the recording data.
 
+When a `directory` option has been passed to the `VoiceRecorder.startRecording` method the data will include a `uri` instead of a `recordDataBase64`
+
 ```typescript
 VoiceRecorder.stopRecording()
     .then((result: RecordingData) => console.log(result.value))
@@ -141,6 +151,7 @@ VoiceRecorder.stopRecording()
 | `recordDataBase64` | The recorded audio data in Base64 format.      |
 | `msDuration`       | The duration of the recording in milliseconds. |
 | `mimeType`         | The MIME type of the recorded audio.           |
+| `uri`              | The URI to the audio file                      |
 
 | Error Code                  | Description                                          |
 |-----------------------------|------------------------------------------------------|
