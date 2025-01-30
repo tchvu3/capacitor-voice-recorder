@@ -28,6 +28,14 @@ npx cap sync
 
 ## Configuration
 
+### Using with Android
+
+Add the following to your `AndroidManifest.xml`:
+
+```xml
+<uses-permission android:name="android.permission.RECORD_AUDIO" />
+```
+
 ### Using with iOS
 
 Add the following to your `Info.plist`:
