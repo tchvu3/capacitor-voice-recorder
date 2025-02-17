@@ -3,18 +3,23 @@ package com.tchvu3.capacitorvoicerecorder;
 import android.content.Context;
 import android.media.MediaRecorder;
 import android.os.Build;
+import android.os.Environment;
 import java.io.File;
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CustomMediaRecorder {
 
     private final Context context;
+    private final RecordOptions options;
     private MediaRecorder mediaRecorder;
     private File outputFile;
     private CurrentRecordingStatus currentRecordingStatus = CurrentRecordingStatus.NONE;
 
-    public CustomMediaRecorder(Context context) throws IOException {
+    public CustomMediaRecorder(Context context, RecordOptions options) throws IOException {
         this.context = context;
+        this.options = options;
         generateMediaRecorder();
     }
 
@@ -31,9 +36,41 @@ public class CustomMediaRecorder {
 
     private void setRecorderOutputFile() throws IOException {
         File outputDir = context.getCacheDir();
-        outputFile = File.createTempFile("voice_record_temp", ".aac", outputDir);
-        outputFile.deleteOnExit();
+        String directory = options.getDirectory();
+        String subDirectory = options.getSubDirectory();
+
+        if (directory != null) {
+            outputDir = this.getDirectory(directory);
+            if (subDirectory != null) {
+                Pattern pattern = Pattern.compile("^/?(.+[^/])/?$");
+                Matcher matcher = pattern.matcher(subDirectory);
+                if (matcher.matches()) {
+                    outputDir = new File(outputDir, matcher.group(1));
+                    if (!outputDir.exists()) {
+                        outputDir.mkdirs();
+                    }
+                }
+            }
+        }
+
+        outputFile = File.createTempFile(String.format("recording-%d", System.currentTimeMillis()), ".aac", outputDir);
+
+        if (directory == null) {
+            outputFile.deleteOnExit();
+        }
+
         mediaRecorder.setOutputFile(outputFile.getAbsolutePath());
+    }
+
+    private File getDirectory(String directory) {
+        return switch (directory) {
+            case "DOCUMENTS" -> Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
+            case "DATA", "LIBRARY" -> context.getFilesDir();
+            case "CACHE" -> context.getCacheDir();
+            case "EXTERNAL" -> context.getExternalFilesDir(null);
+            case "EXTERNAL_STORAGE" -> Environment.getExternalStorageDirectory();
+            default -> null;
+        };
     }
 
     public void startRecording() {
@@ -49,6 +86,10 @@ public class CustomMediaRecorder {
 
     public File getOutputFile() {
         return outputFile;
+    }
+
+    public RecordOptions getRecordOptions() {
+        return options;
     }
 
     public boolean pauseRecording() throws NotSupportedOsVersion {
@@ -94,7 +135,7 @@ public class CustomMediaRecorder {
     private static boolean canPhoneCreateMediaRecorderWhileHavingPermission(Context context) {
         CustomMediaRecorder tempMediaRecorder = null;
         try {
-            tempMediaRecorder = new CustomMediaRecorder(context);
+            tempMediaRecorder = new CustomMediaRecorder(context, new RecordOptions(null, null));
             tempMediaRecorder.startRecording();
             tempMediaRecorder.stopRecording();
             return true;
