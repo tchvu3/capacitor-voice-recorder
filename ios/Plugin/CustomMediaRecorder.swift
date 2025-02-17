@@ -3,7 +3,7 @@ import AVFoundation
 
 class CustomMediaRecorder {
 
-    public var options: RecordOptions!
+    var options: RecordOptions!
     private var recordingSession: AVAudioSession!
     private var audioRecorder: AVAudioRecorder!
     private var audioFilePath: URL!
@@ -38,7 +38,7 @@ class CustomMediaRecorder {
         return URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
     }
 
-    public func startRecording(recordOptions: RecordOptions) -> Bool {
+    func startRecording(recordOptions: RecordOptions) -> Bool {
         do {
             options = recordOptions
             recordingSession = AVAudioSession.sharedInstance()
@@ -55,7 +55,7 @@ class CustomMediaRecorder {
         }
     }
 
-    public func stopRecording() {
+    func stopRecording() {
         do {
             audioRecorder.stop()
             try recordingSession.setActive(false)
@@ -67,11 +67,11 @@ class CustomMediaRecorder {
         } catch {}
     }
 
-    public func getOutputFile() -> URL {
+    func getOutputFile() -> URL {
         return audioFilePath
     }
 
-    public func getDirectory(directory: String?) -> FileManager.SearchPathDirectory? {
+    func getDirectory(directory: String?) -> FileManager.SearchPathDirectory? {
         if let directory = directory {
             switch directory {
             case "CACHE":
@@ -85,8 +85,8 @@ class CustomMediaRecorder {
         return nil
     }
 
-    public func pauseRecording() -> Bool {
-        if(status == CurrentRecordingStatus.RECORDING) {
+    func pauseRecording() -> Bool {
+        if status == CurrentRecordingStatus.RECORDING {
             audioRecorder.pause()
             status = CurrentRecordingStatus.PAUSED
             return true
@@ -95,8 +95,8 @@ class CustomMediaRecorder {
         }
     }
 
-    public func resumeRecording() -> Bool {
-        if(status == CurrentRecordingStatus.PAUSED) {
+    func resumeRecording() -> Bool {
+        if status == CurrentRecordingStatus.PAUSED {
             audioRecorder.record()
             status = CurrentRecordingStatus.RECORDING
             return true
@@ -105,7 +105,7 @@ class CustomMediaRecorder {
         }
     }
 
-    public func getCurrentStatus() -> CurrentRecordingStatus {
+    func getCurrentStatus() -> CurrentRecordingStatus {
         return status
     }
 

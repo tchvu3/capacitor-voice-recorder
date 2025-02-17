@@ -5,7 +5,7 @@ import Capacitor
 @objc(VoiceRecorder)
 public class VoiceRecorder: CAPPlugin {
 
-    private var customMediaRecorder: CustomMediaRecorder? = nil
+    private var customMediaRecorder: CustomMediaRecorder?
 
     @objc func canDeviceVoiceRecord(_ call: CAPPluginCall) {
         call.resolve(ResponseGenerator.successResponse())
@@ -26,18 +26,18 @@ public class VoiceRecorder: CAPPlugin {
     }
 
     @objc func startRecording(_ call: CAPPluginCall) {
-        if(!doesUserGaveAudioRecordingPermission()) {
+        if !doesUserGaveAudioRecordingPermission() {
             call.reject(Messages.MISSING_PERMISSION)
             return
         }
 
-        if(customMediaRecorder != nil) {
+        if customMediaRecorder != nil {
             call.reject(Messages.ALREADY_RECORDING)
             return
         }
 
         customMediaRecorder = CustomMediaRecorder()
-        if(customMediaRecorder == nil) {
+        if customMediaRecorder == nil {
             call.reject(Messages.CANNOT_RECORD_ON_THIS_PHONE)
             return
         }
@@ -55,7 +55,7 @@ public class VoiceRecorder: CAPPlugin {
     }
 
     @objc func stopRecording(_ call: CAPPluginCall) {
-        if(customMediaRecorder == nil) {
+        if customMediaRecorder == nil {
             call.reject(Messages.RECORDING_HAS_NOT_STARTED)
             return
         }
@@ -63,7 +63,7 @@ public class VoiceRecorder: CAPPlugin {
         customMediaRecorder?.stopRecording()
 
         let audioFileUrl = customMediaRecorder?.getOutputFile()
-        if(audioFileUrl == nil) {
+        if audioFileUrl == nil {
             customMediaRecorder = nil
             call.reject(Messages.FAILED_TO_FETCH_RECORDING)
             return
@@ -85,7 +85,7 @@ public class VoiceRecorder: CAPPlugin {
     }
 
     @objc func pauseRecording(_ call: CAPPluginCall) {
-        if(customMediaRecorder == nil) {
+        if customMediaRecorder == nil {
             call.reject(Messages.RECORDING_HAS_NOT_STARTED)
         } else {
             call.resolve(ResponseGenerator.fromBoolean(customMediaRecorder?.pauseRecording() ?? false))
@@ -93,7 +93,7 @@ public class VoiceRecorder: CAPPlugin {
     }
 
     @objc func resumeRecording(_ call: CAPPluginCall) {
-        if(customMediaRecorder == nil) {
+        if customMediaRecorder == nil {
             call.reject(Messages.RECORDING_HAS_NOT_STARTED)
         } else {
             call.resolve(ResponseGenerator.fromBoolean(customMediaRecorder?.resumeRecording() ?? false))
@@ -101,7 +101,7 @@ public class VoiceRecorder: CAPPlugin {
     }
 
     @objc func getCurrentStatus(_ call: CAPPluginCall) {
-        if(customMediaRecorder == nil) {
+        if customMediaRecorder == nil {
             call.resolve(ResponseGenerator.statusResponse(CurrentRecordingStatus.NONE))
         } else {
             call.resolve(ResponseGenerator.statusResponse(customMediaRecorder?.getCurrentStatus() ?? CurrentRecordingStatus.NONE))
@@ -113,7 +113,7 @@ public class VoiceRecorder: CAPPlugin {
     }
 
     func readFileAsBase64(_ filePath: URL?) -> String? {
-        if(filePath == nil) {
+        if filePath == nil {
             return nil
         }
 
