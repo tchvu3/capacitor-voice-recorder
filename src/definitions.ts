@@ -39,7 +39,7 @@ export interface VoiceRecorderPlugin {
 
   hasAudioRecordingPermission(): Promise<GenericResponse>;
 
-  startRecording(options: RecordingOptions): Promise<GenericResponse>;
+  startRecording(options?: RecordingOptions): Promise<GenericResponse>;
 
   stopRecording(): Promise<RecordingData>;
 

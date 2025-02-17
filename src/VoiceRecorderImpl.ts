@@ -46,7 +46,7 @@ export class VoiceRecorderImpl {
     }
   }
 
-  public async startRecording(options: RecordingOptions): Promise<GenericResponse> {
+  public async startRecording(options?: RecordingOptions): Promise<GenericResponse> {
     if (this.mediaRecorder != null) {
       throw alreadyRecordingError();
     }
@@ -157,7 +157,7 @@ export class VoiceRecorderImpl {
     return foundSupportedType ?? null;
   }
 
-  private onSuccessfullyStartedRecording(stream: MediaStream, options: RecordingOptions): GenericResponse {
+  private onSuccessfullyStartedRecording(stream: MediaStream, options?: RecordingOptions): GenericResponse {
     this.pendingResult = new Promise((resolve, reject) => {
       this.mediaRecorder = new MediaRecorder(stream);
       this.mediaRecorder.onerror = () => {
