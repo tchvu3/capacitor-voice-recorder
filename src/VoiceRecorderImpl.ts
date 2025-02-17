@@ -1,7 +1,15 @@
+import { Filesystem } from '@capacitor/filesystem';
+import write_blob from 'capacitor-blob-writer';
 import getBlobDuration from 'get-blob-duration';
 
 import { RecordingStatus } from './definitions';
-import type { Base64String, CurrentRecordingStatus, GenericResponse, RecordingData } from './definitions';
+import type {
+  Base64String,
+  CurrentRecordingStatus,
+  GenericResponse,
+  RecordingData,
+  RecordingOptions,
+} from './definitions';
 import {
   alreadyRecordingError,
   couldNotQueryPermissionStatusError,
@@ -16,7 +24,13 @@ import {
 } from './predefined-web-responses';
 
 // these mime types will be checked one by one in order until one of them is found to be supported by the current browser
-const possibleMimeTypes = ['audio/aac', 'audio/webm;codecs=opus', 'audio/mp4', 'audio/webm', 'audio/ogg;codecs=opus'];
+const POSSIBLE_MIME_TYPES = {
+  'audio/aac': '.aac',
+  'audio/webm;codecs=opus': '.ogg',
+  'audio/mp4': '.mp3',
+  'audio/webm': '.ogg',
+  'audio/ogg;codecs=opus': '.ogg',
+};
 const neverResolvingPromise = (): Promise<any> => new Promise(() => undefined);
 
 export class VoiceRecorderImpl {
@@ -32,7 +46,7 @@ export class VoiceRecorderImpl {
     }
   }
 
-  public async startRecording(): Promise<GenericResponse> {
+  public async startRecording(options: RecordingOptions): Promise<GenericResponse> {
     if (this.mediaRecorder != null) {
       throw alreadyRecordingError();
     }
@@ -47,7 +61,7 @@ export class VoiceRecorderImpl {
 
     return navigator.mediaDevices
       .getUserMedia({ audio: true })
-      .then(this.onSuccessfullyStartedRecording.bind(this))
+      .then((stream) => this.onSuccessfullyStartedRecording(stream, options))
       .catch(this.onFailedToStartRecording.bind(this));
   }
 
@@ -133,13 +147,17 @@ export class VoiceRecorderImpl {
     }
   }
 
-  public static getSupportedMimeType(): string | null {
+  public static getSupportedMimeType<T extends keyof typeof POSSIBLE_MIME_TYPES>(): T | null {
     if (MediaRecorder?.isTypeSupported == null) return null;
-    const foundSupportedType = possibleMimeTypes.find((type) => MediaRecorder.isTypeSupported(type));
+
+    const foundSupportedType = Object.keys(POSSIBLE_MIME_TYPES).find((type) => MediaRecorder.isTypeSupported(type)) as
+      | T
+      | undefined;
+
     return foundSupportedType ?? null;
   }
 
-  private onSuccessfullyStartedRecording(stream: MediaStream): GenericResponse {
+  private onSuccessfullyStartedRecording(stream: MediaStream, options: RecordingOptions): GenericResponse {
     this.pendingResult = new Promise((resolve, reject) => {
       this.mediaRecorder = new MediaRecorder(stream);
       this.mediaRecorder.onerror = () => {
@@ -159,10 +177,29 @@ export class VoiceRecorderImpl {
           reject(emptyRecordingError());
           return;
         }
-        const recordDataBase64 = await VoiceRecorderImpl.blobToBase64(blobVoiceRecording);
+
+        let uri;
+        let recordDataBase64;
+        if (options != null) {
+          const subDirectory = options.subDirectory?.match(/^\/?(.+[^/])\/?$/)?.[1] ?? '';
+          const path = `${subDirectory}/recording-${new Date().getTime()}${POSSIBLE_MIME_TYPES[mimeType]}`;
+
+          await write_blob({
+            blob: blobVoiceRecording,
+            directory: options.directory,
+            fast_mode: true,
+            path,
+            recursive: true,
+          });
+
+          ({ uri } = await Filesystem.getUri({ directory: options.directory, path }));
+        } else {
+          recordDataBase64 = await VoiceRecorderImpl.blobToBase64(blobVoiceRecording);
+        }
+
         const recordingDuration = await getBlobDuration(blobVoiceRecording);
         this.prepareInstanceForNextOperation();
-        resolve({ value: { recordDataBase64, mimeType, msDuration: recordingDuration * 1000 } });
+        resolve({ value: { recordDataBase64, mimeType, msDuration: recordingDuration * 1000, uri } });
       };
       this.mediaRecorder.ondataavailable = (event: any) => this.chunks.push(event.data);
       this.mediaRecorder.start();

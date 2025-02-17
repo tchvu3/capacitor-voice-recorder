@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.util.Base64;
 import com.getcapacitor.PermissionState;
 import com.getcapacitor.Plugin;
@@ -77,7 +78,10 @@ public class VoiceRecorder extends Plugin {
         }
 
         try {
-            mediaRecorder = new CustomMediaRecorder(getContext());
+            String directory = call.getString("directory");
+            String subDirectory = call.getString("subDirectory");
+            RecordOptions options = new RecordOptions(directory, subDirectory);
+            mediaRecorder = new CustomMediaRecorder(getContext(), options);
             mediaRecorder.startRecording();
             call.resolve(ResponseGenerator.successResponse());
         } catch (Exception exp) {
@@ -96,12 +100,23 @@ public class VoiceRecorder extends Plugin {
         try {
             mediaRecorder.stopRecording();
             File recordedFile = mediaRecorder.getOutputFile();
+            RecordOptions options = mediaRecorder.getRecordOptions();
+
+            String recordDataBase64 = null;
+            String uri = null;
+            if (options.getDirectory() != null) {
+                uri = Uri.fromFile(recordedFile).toString();
+            } else {
+                recordDataBase64 = readRecordedFileAsBase64(recordedFile);
+            }
+
             RecordData recordData = new RecordData(
-                readRecordedFileAsBase64(recordedFile),
+                recordDataBase64,
                 getMsDurationOfAudioFile(recordedFile.getAbsolutePath()),
-                "audio/aac"
+                "audio/aac",
+                uri
             );
-            if (recordData.getRecordDataBase64() == null || recordData.getMsDuration() < 0) {
+            if ((recordDataBase64 == null && uri == null) || recordData.getMsDuration() < 0) {
                 call.reject(Messages.EMPTY_RECORDING);
             } else {
                 call.resolve(ResponseGenerator.dataResponse(recordData.toJSObject()));
@@ -109,7 +124,11 @@ public class VoiceRecorder extends Plugin {
         } catch (Exception exp) {
             call.reject(Messages.FAILED_TO_FETCH_RECORDING, exp);
         } finally {
-            mediaRecorder.deleteOutputFile();
+            RecordOptions options = mediaRecorder.getRecordOptions();
+            if (options.getDirectory() == null) {
+                mediaRecorder.deleteOutputFile();
+            }
+
             mediaRecorder = null;
         }
     }
