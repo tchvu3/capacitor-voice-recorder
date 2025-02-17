@@ -2,7 +2,6 @@ import { Filesystem } from '@capacitor/filesystem';
 import write_blob from 'capacitor-blob-writer';
 import getBlobDuration from 'get-blob-duration';
 
-import { RecordingStatus } from './definitions';
 import type {
   Base64String,
   CurrentRecordingStatus,
@@ -10,6 +9,7 @@ import type {
   RecordingData,
   RecordingOptions,
 } from './definitions';
+import { RecordingStatus } from './definitions';
 import {
   alreadyRecordingError,
   couldNotQueryPermissionStatusError,
