@@ -237,10 +237,11 @@ Versioning follows Capacitor versioning.
 Major versions of the plugin are compatible with major versions of Capacitor.
 You can find each version in its own dedicated branch.
 
-| Plugin Version | Capacitor Version | Branch |
-|----------------|-------------------|--------|
-| 5.*            | 5                 | v5     |
-| 6.*            | 6                 | master |
+| Plugin Version | Capacitor Version |
+|----------------|-------------------|
+| 5.*            | 5                 |
+| 6.*            | 6                 |
+| 7.*            | 7                 |
 
 ## Donation
 
