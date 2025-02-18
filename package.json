@@ -56,7 +56,7 @@
     "get-blob-duration": "^1.2.0"
   },
   "devDependencies": {
-    "@capacitor/android": "^6.0.0",
+    "@capacitor/android": "^7.0.1",
     "@capacitor/core": "^6.0.0",
     "@capacitor/docgen": "^0.2.1",
     "@capacitor/ios": "^6.0.0",
