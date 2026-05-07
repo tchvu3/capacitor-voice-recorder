@@ -2,7 +2,9 @@ import write_blob from 'capacitor-blob-writer';
 import getBlobDuration from 'get-blob-duration';
 
 import type {
+  AudioChunk,
   Base64String,
+  ChunkedRecordingOptions,
   CurrentRecordingStatus,
   GenericResponse,
   RecordingData,
@@ -30,12 +32,25 @@ const POSSIBLE_MIME_TYPES = {
   'audio/webm': '.ogg',
   'audio/ogg;codecs=opus': '.ogg',
 };
+const DEFAULT_CHUNK_INTERVAL_MS = 30000;
 const neverResolvingPromise = (): Promise<any> => new Promise(() => undefined);
+
+export type AudioChunkEmitter = (chunk: AudioChunk) => void;
 
 export class VoiceRecorderImpl {
   private mediaRecorder: MediaRecorder | null = null;
   private chunks: any[] = [];
   private pendingResult: Promise<RecordingData> = neverResolvingPromise();
+
+  // Chunked recording state
+  private chunkedStream: MediaStream | null = null;
+  private chunkedRecorder: MediaRecorder | null = null;
+  private chunkedBuffer: Blob[] = [];
+  private chunkedInterval: number = DEFAULT_CHUNK_INTERVAL_MS;
+  private chunkedTimer: ReturnType<typeof setTimeout> | null = null;
+  private chunkIndex: number = 0;
+  private chunkedEmitter: AudioChunkEmitter | null = null;
+  private chunkedMimeType: string | null = null;
 
   public static async canDeviceVoiceRecord(): Promise<GenericResponse> {
     if (navigator?.mediaDevices?.getUserMedia == null || VoiceRecorderImpl.getSupportedMimeType() == null) {
@@ -46,7 +61,7 @@ export class VoiceRecorderImpl {
   }
 
   public async startRecording(options?: RecordingOptions): Promise<GenericResponse> {
-    if (this.mediaRecorder != null) {
+    if (this.mediaRecorder != null || this.chunkedRecorder != null) {
       throw alreadyRecordingError();
     }
     const deviceCanRecord = await VoiceRecorderImpl.canDeviceVoiceRecord();
@@ -135,16 +150,114 @@ export class VoiceRecorderImpl {
   }
 
   public getCurrentStatus(): Promise<CurrentRecordingStatus> {
-    if (this.mediaRecorder == null) {
-      return Promise.resolve({ status: RecordingStatus.NONE });
-    } else if (this.mediaRecorder.state === 'recording') {
-      return Promise.resolve({ status: RecordingStatus.RECORDING });
-    } else if (this.mediaRecorder.state === 'paused') {
-      return Promise.resolve({ status: RecordingStatus.PAUSED });
-    } else {
+    if (this.mediaRecorder != null) {
+      if (this.mediaRecorder.state === 'recording') {
+        return Promise.resolve({ status: RecordingStatus.RECORDING });
+      }
+      if (this.mediaRecorder.state === 'paused') {
+        return Promise.resolve({ status: RecordingStatus.PAUSED });
+      }
       return Promise.resolve({ status: RecordingStatus.NONE });
     }
+    if (this.chunkedRecorder != null) {
+      if (this.chunkedRecorder.state === 'recording') {
+        return Promise.resolve({ status: RecordingStatus.RECORDING });
+      }
+      if (this.chunkedRecorder.state === 'paused') {
+        return Promise.resolve({ status: RecordingStatus.PAUSED });
+      }
+    }
+    return Promise.resolve({ status: RecordingStatus.NONE });
   }
+
+  // --- chunked recording ---
+
+  public setChunkEmitter(emitter: AudioChunkEmitter | null): void {
+    this.chunkedEmitter = emitter;
+  }
+
+  public async startChunkedRecording(options?: ChunkedRecordingOptions): Promise<GenericResponse> {
+    if (this.chunkedRecorder != null || this.mediaRecorder != null) {
+      throw alreadyRecordingError();
+    }
+    const deviceCanRecord = await VoiceRecorderImpl.canDeviceVoiceRecord();
+    if (!deviceCanRecord.value) {
+      throw deviceCannotVoiceRecordError();
+    }
+    const havingPermission = await VoiceRecorderImpl.hasAudioRecordingPermission().catch(() => successResponse());
+    if (!havingPermission.value) {
+      throw missingPermissionError();
+    }
+
+    const mimeType = VoiceRecorderImpl.getSupportedMimeType();
+    if (mimeType == null) {
+      throw deviceCannotVoiceRecordError();
+    }
+
+    this.chunkedInterval = options?.chunkIntervalMs ?? DEFAULT_CHUNK_INTERVAL_MS;
+    this.chunkedMimeType = mimeType;
+    this.chunkIndex = 0;
+    this.chunkedBuffer = [];
+
+    try {
+      this.chunkedStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    } catch {
+      this.prepareChunkedInstanceForNextOperation();
+      throw failedToRecordError();
+    }
+
+    this.startNewChunkedRecorder();
+    this.scheduleNextChunk();
+    return successResponse();
+  }
+
+  public async stopChunkedRecording(): Promise<GenericResponse> {
+    if (this.chunkedRecorder == null) {
+      throw recordingHasNotStartedError();
+    }
+    if (this.chunkedTimer != null) {
+      clearTimeout(this.chunkedTimer);
+      this.chunkedTimer = null;
+    }
+
+    // Stop current recorder and emit final chunk.
+    await this.rotateChunkAndEmit(true);
+
+    if (this.chunkedStream != null) {
+      this.chunkedStream.getTracks().forEach((track) => track.stop());
+    }
+    this.prepareChunkedInstanceForNextOperation();
+    return successResponse();
+  }
+
+  public pauseChunkedRecording(): Promise<GenericResponse> {
+    if (this.chunkedRecorder == null) {
+      throw recordingHasNotStartedError();
+    }
+    if (this.chunkedRecorder.state === 'recording') {
+      if (this.chunkedTimer != null) {
+        clearTimeout(this.chunkedTimer);
+        this.chunkedTimer = null;
+      }
+      this.chunkedRecorder.pause();
+      return Promise.resolve(successResponse());
+    }
+    return Promise.resolve(failureResponse());
+  }
+
+  public resumeChunkedRecording(): Promise<GenericResponse> {
+    if (this.chunkedRecorder == null) {
+      throw recordingHasNotStartedError();
+    }
+    if (this.chunkedRecorder.state === 'paused') {
+      this.chunkedRecorder.resume();
+      this.scheduleNextChunk();
+      return Promise.resolve(successResponse());
+    }
+    return Promise.resolve(failureResponse());
+  }
+
+  // --- internals ---
 
   public static getSupportedMimeType<T extends keyof typeof POSSIBLE_MIME_TYPES>(): T | null {
     if (MediaRecorder?.isTypeSupported == null) return null;
@@ -204,6 +317,74 @@ export class VoiceRecorderImpl {
     return successResponse();
   }
 
+  private startNewChunkedRecorder(): void {
+    if (this.chunkedStream == null || this.chunkedMimeType == null) return;
+    this.chunkedBuffer = [];
+    this.chunkedRecorder = new MediaRecorder(this.chunkedStream);
+    this.chunkedRecorder.ondataavailable = (event: BlobEvent) => {
+      if (event.data && event.data.size > 0) {
+        this.chunkedBuffer.push(event.data);
+      }
+    };
+    this.chunkedRecorder.start();
+  }
+
+  private scheduleNextChunk(): void {
+    if (this.chunkedRecorder == null || this.chunkedRecorder.state !== 'recording') return;
+    if (this.chunkedTimer != null) clearTimeout(this.chunkedTimer);
+    this.chunkedTimer = setTimeout(async () => {
+      await this.rotateChunkAndEmit(false);
+      this.scheduleNextChunk();
+    }, this.chunkedInterval);
+  }
+
+  private async rotateChunkAndEmit(isFinalChunk: boolean): Promise<void> {
+    if (this.chunkedRecorder == null || this.chunkedMimeType == null) return;
+
+    // Stop the current recorder and wait for its final ondataavailable to flush.
+    const currentRecorder = this.chunkedRecorder;
+    const bufferToFlush = this.chunkedBuffer;
+    const mimeType = this.chunkedMimeType;
+
+    const stopped = new Promise<void>((resolve) => {
+      currentRecorder.onstop = () => resolve();
+      try {
+        currentRecorder.stop();
+      } catch {
+        resolve();
+      }
+    });
+    // Detach so the new recorder created below doesn't collide.
+    this.chunkedRecorder = null;
+    this.chunkedBuffer = [];
+
+    await stopped;
+
+    const blob = new Blob(bufferToFlush, { type: mimeType });
+    if (blob.size > 0) {
+      const base64 = await VoiceRecorderImpl.blobToBase64(blob);
+      let duration = 0;
+      try {
+        duration = (await getBlobDuration(blob)) * 1000;
+      } catch {
+        duration = 0;
+      }
+      const chunk: AudioChunk = {
+        recordDataBase64: base64,
+        msDuration: Math.round(duration),
+        mimeType,
+        chunkIndex: this.chunkIndex,
+        isFinalChunk,
+      };
+      this.chunkedEmitter?.(chunk);
+      this.chunkIndex++;
+    }
+
+    if (!isFinalChunk) {
+      this.startNewChunkedRecorder();
+    }
+  }
+
   private onFailedToStartRecording(): GenericResponse {
     this.prepareInstanceForNextOperation();
     throw failedToRecordError();
@@ -233,5 +414,24 @@ export class VoiceRecorderImpl {
     this.pendingResult = neverResolvingPromise();
     this.mediaRecorder = null;
     this.chunks = [];
+  }
+
+  private prepareChunkedInstanceForNextOperation(): void {
+    if (this.chunkedTimer != null) {
+      clearTimeout(this.chunkedTimer);
+      this.chunkedTimer = null;
+    }
+    if (this.chunkedRecorder != null && this.chunkedRecorder.state !== 'inactive') {
+      try {
+        this.chunkedRecorder.stop();
+      } catch (error) {
+        console.warn('While trying to stop a chunked media recorder, an error was thrown', error);
+      }
+    }
+    this.chunkedRecorder = null;
+    this.chunkedStream = null;
+    this.chunkedBuffer = [];
+    this.chunkIndex = 0;
+    this.chunkedMimeType = null;
   }
 }

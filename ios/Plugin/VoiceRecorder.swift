@@ -6,6 +6,7 @@ import Capacitor
 public class VoiceRecorder: CAPPlugin {
 
     private var customMediaRecorder: CustomMediaRecorder?
+    private var chunkedMediaRecorder: ChunkedMediaRecorder?
 
     @objc func canDeviceVoiceRecord(_ call: CAPPluginCall) {
         call.resolve(ResponseGenerator.successResponse())
@@ -124,11 +125,82 @@ public class VoiceRecorder: CAPPlugin {
     }
 
     @objc func getCurrentStatus(_ call: CAPPluginCall) {
-        if customMediaRecorder == nil {
+        if customMediaRecorder == nil && chunkedMediaRecorder == nil {
             call.resolve(ResponseGenerator.statusResponse(CurrentRecordingStatus.NONE))
-        } else {
+        } else if customMediaRecorder != nil {
             call.resolve(ResponseGenerator.statusResponse(customMediaRecorder?.getCurrentStatus() ?? CurrentRecordingStatus.NONE))
+        } else {
+            call.resolve(ResponseGenerator.statusResponse(chunkedMediaRecorder?.getCurrentStatus() ?? CurrentRecordingStatus.NONE))
         }
+    }
+
+    @objc func startChunkedRecording(_ call: CAPPluginCall) {
+        if !doesUserGaveAudioRecordingPermission() {
+            call.reject(Messages.MISSING_PERMISSION)
+            return
+        }
+
+        if customMediaRecorder != nil || chunkedMediaRecorder != nil {
+            call.reject(Messages.ALREADY_RECORDING)
+            return
+        }
+
+        let directory: String? = call.getString("directory")
+        let subDirectory: String? = call.getString("subDirectory")
+        let chunkIntervalMs: Int = call.getInt("chunkIntervalMs") ?? 30000
+        let recordOptions = RecordOptions(directory: directory, subDirectory: subDirectory)
+
+        chunkedMediaRecorder = ChunkedMediaRecorder()
+        chunkedMediaRecorder?.onInterruptionBegan = { [weak self] in
+            self?.notifyListeners("voiceRecordingInterrupted", data: [:])
+        }
+        chunkedMediaRecorder?.onInterruptionEnded = { [weak self] in
+            self?.notifyListeners("voiceRecordingInterruptionEnded", data: [:])
+        }
+
+        let started = chunkedMediaRecorder?.startRecording(
+            recordOptions: recordOptions,
+            chunkIntervalMs: chunkIntervalMs,
+            voiceRecorder: self
+        ) ?? false
+
+        if !started {
+            chunkedMediaRecorder = nil
+            call.reject(Messages.CANNOT_RECORD_ON_THIS_PHONE)
+        } else {
+            call.resolve(ResponseGenerator.successResponse())
+        }
+    }
+
+    @objc func stopChunkedRecording(_ call: CAPPluginCall) {
+        if chunkedMediaRecorder == nil {
+            call.reject(Messages.RECORDING_HAS_NOT_STARTED)
+            return
+        }
+
+        chunkedMediaRecorder?.stopRecording()
+        chunkedMediaRecorder = nil
+        call.resolve(ResponseGenerator.successResponse())
+    }
+
+    @objc func pauseChunkedRecording(_ call: CAPPluginCall) {
+        if chunkedMediaRecorder == nil {
+            call.reject(Messages.RECORDING_HAS_NOT_STARTED)
+        } else {
+            call.resolve(ResponseGenerator.fromBoolean(chunkedMediaRecorder?.pauseRecording() ?? false))
+        }
+    }
+
+    @objc func resumeChunkedRecording(_ call: CAPPluginCall) {
+        if chunkedMediaRecorder == nil {
+            call.reject(Messages.RECORDING_HAS_NOT_STARTED)
+        } else {
+            call.resolve(ResponseGenerator.fromBoolean(chunkedMediaRecorder?.resumeRecording() ?? false))
+        }
+    }
+
+    func emitAudioChunk(_ chunk: AudioChunk) {
+        notifyListeners("audioChunk", data: chunk.toDictionary())
     }
 
     func doesUserGaveAudioRecordingPermission() -> Bool {

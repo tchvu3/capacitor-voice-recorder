@@ -26,6 +26,7 @@ public class VoiceRecorder extends Plugin {
 
     static final String RECORD_AUDIO_ALIAS = "voice recording";
     private CustomMediaRecorder mediaRecorder;
+    private ChunkedMediaRecorder chunkedMediaRecorder;
 
     @PluginMethod
     public void canDeviceVoiceRecord(PluginCall call) {
@@ -174,11 +175,94 @@ public class VoiceRecorder extends Plugin {
 
     @PluginMethod
     public void getCurrentStatus(PluginCall call) {
-        if (mediaRecorder == null) {
+        if (mediaRecorder == null && chunkedMediaRecorder == null) {
             call.resolve(ResponseGenerator.statusResponse(CurrentRecordingStatus.NONE));
-        } else {
+        } else if (mediaRecorder != null) {
             call.resolve(ResponseGenerator.statusResponse(mediaRecorder.getCurrentStatus()));
+        } else {
+            call.resolve(ResponseGenerator.statusResponse(chunkedMediaRecorder.getCurrentStatus()));
         }
+    }
+
+    @PluginMethod
+    public void startChunkedRecording(PluginCall call) {
+        if (!CustomMediaRecorder.canPhoneCreateMediaRecorder(getContext())) {
+            call.reject(Messages.CANNOT_RECORD_ON_THIS_PHONE);
+            return;
+        }
+        if (!doesUserGaveAudioRecordingPermission()) {
+            call.reject(Messages.MISSING_PERMISSION);
+            return;
+        }
+        if (this.isMicrophoneOccupied()) {
+            call.reject(Messages.MICROPHONE_BEING_USED);
+            return;
+        }
+        if (mediaRecorder != null || chunkedMediaRecorder != null) {
+            call.reject(Messages.ALREADY_RECORDING);
+            return;
+        }
+
+        try {
+            String directory = call.getString("directory");
+            String subDirectory = call.getString("subDirectory");
+            int chunkIntervalMs = call.getInt("chunkIntervalMs", 30000);
+            RecordOptions options = new RecordOptions(directory, subDirectory);
+            chunkedMediaRecorder = new ChunkedMediaRecorder(getContext(), options, chunkIntervalMs, this);
+            chunkedMediaRecorder.setOnInterruptionBegan(() -> notifyListeners("voiceRecordingInterrupted", null));
+            chunkedMediaRecorder.setOnInterruptionEnded(() -> notifyListeners("voiceRecordingInterruptionEnded", null));
+            chunkedMediaRecorder.startRecording();
+            call.resolve(ResponseGenerator.successResponse());
+        } catch (Exception exp) {
+            chunkedMediaRecorder = null;
+            call.reject(Messages.FAILED_TO_RECORD, exp);
+        }
+    }
+
+    @PluginMethod
+    public void stopChunkedRecording(PluginCall call) {
+        if (chunkedMediaRecorder == null) {
+            call.reject(Messages.RECORDING_HAS_NOT_STARTED);
+            return;
+        }
+        try {
+            chunkedMediaRecorder.stopRecording();
+            call.resolve(ResponseGenerator.successResponse());
+        } catch (Exception exp) {
+            call.reject(Messages.FAILED_TO_FETCH_RECORDING, exp);
+        } finally {
+            chunkedMediaRecorder = null;
+        }
+    }
+
+    @PluginMethod
+    public void pauseChunkedRecording(PluginCall call) {
+        if (chunkedMediaRecorder == null) {
+            call.reject(Messages.RECORDING_HAS_NOT_STARTED);
+            return;
+        }
+        try {
+            call.resolve(ResponseGenerator.fromBoolean(chunkedMediaRecorder.pauseRecording()));
+        } catch (NotSupportedOsVersion exception) {
+            call.reject(Messages.NOT_SUPPORTED_OS_VERSION);
+        }
+    }
+
+    @PluginMethod
+    public void resumeChunkedRecording(PluginCall call) {
+        if (chunkedMediaRecorder == null) {
+            call.reject(Messages.RECORDING_HAS_NOT_STARTED);
+            return;
+        }
+        try {
+            call.resolve(ResponseGenerator.fromBoolean(chunkedMediaRecorder.resumeRecording()));
+        } catch (NotSupportedOsVersion exception) {
+            call.reject(Messages.NOT_SUPPORTED_OS_VERSION);
+        }
+    }
+
+    public void emitAudioChunk(AudioChunk chunk) {
+        notifyListeners("audioChunk", chunk.toJSObject());
     }
 
     private boolean doesUserGaveAudioRecordingPermission() {

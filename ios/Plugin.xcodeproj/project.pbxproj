@@ -22,6 +22,8 @@
 		8C7DEA2E2A10DFCF005A0FF2 /* Messages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C7DEA2D2A10DFCF005A0FF2 /* Messages.swift */; };
 		8C7DEA302A10DFDC005A0FF2 /* RecordData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C7DEA2F2A10DFDC005A0FF2 /* RecordData.swift */; };
 		8C7DEA322A10DFE7005A0FF2 /* ResponseGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C7DEA312A10DFE7005A0FF2 /* ResponseGenerator.swift */; };
+		C1A0000000000000000A0002 /* AudioChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1A0000000000000000A0001 /* AudioChunk.swift */; };
+		C1A0000000000000000C0002 /* ChunkedMediaRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1A0000000000000000C0001 /* ChunkedMediaRecorder.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,6 +58,8 @@
 		96ED1B6440D6672E406C8D19 /* Pods-PluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PluginTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PluginTests/Pods-PluginTests.debug.xcconfig"; sourceTree = "<group>"; };
 		F65BB2953ECE002E1EF3E424 /* Pods-PluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PluginTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-PluginTests/Pods-PluginTests.release.xcconfig"; sourceTree = "<group>"; };
 		F6753A823D3815DB436415E3 /* Pods_PluginTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PluginTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C1A0000000000000000A0001 /* AudioChunk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioChunk.swift; sourceTree = "<group>"; };
+		C1A0000000000000000C0001 /* ChunkedMediaRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChunkedMediaRecorder.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -113,6 +117,8 @@
 				8C7DEA2D2A10DFCF005A0FF2 /* Messages.swift */,
 				8C7DEA2F2A10DFDC005A0FF2 /* RecordData.swift */,
 				8C7DEA312A10DFE7005A0FF2 /* ResponseGenerator.swift */,
+				C1A0000000000000000A0001 /* AudioChunk.swift */,
+				C1A0000000000000000C0001 /* ChunkedMediaRecorder.swift */,
 			);
 			path = Plugin;
 			sourceTree = "<group>";
@@ -330,6 +336,8 @@
 				2F98D68224C9AAE500613A4C /* VoiceRecorder.swift in Sources */,
 				50ADFFA82020EE4F00D50D53 /* VoiceRecorderPlugin.m in Sources */,
 				8C7DEA2A2A10DD69005A0FF2 /* CurrentRecordingStatus.swift in Sources */,
+				C1A0000000000000000A0002 /* AudioChunk.swift in Sources */,
+				C1A0000000000000000C0002 /* ChunkedMediaRecorder.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

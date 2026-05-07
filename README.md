@@ -58,6 +58,18 @@ Add the following to your `Info.plist`:
 | pauseRecording                  | ✅       | ✅   | ✅   |
 | resumeRecording                 | ✅       | ✅   | ✅   |
 | getCurrentStatus                | ✅       | ✅   | ✅   |
+| startChunkedRecording           | ✅       | ✅   | ✅   |
+| stopChunkedRecording            | ✅       | ✅   | ✅   |
+| pauseChunkedRecording           | ✅       | ✅   | ✅   |
+| resumeChunkedRecording          | ✅       | ✅   | ✅   |
+
+## Events
+
+| Event Name                        | Android | iOS | Web |
+|:----------------------------------|:--------|:----|:----|
+| `voiceRecordingInterrupted`       | ✅       | ✅   | ❌   |
+| `voiceRecordingInterruptionEnded` | ✅       | ✅   | ❌   |
+| `audioChunk`                      | ✅       | ✅   | ✅   |
 
 ## Overview
 
@@ -358,6 +370,53 @@ You can find each version in its own dedicated branch.
 | 5.*            | 5                 |
 | 6.*            | 6                 |
 | 7.*            | 7                 |
+
+## Chunked Recording
+
+For long-form recordings (e.g. meetings, lectures) where holding a multi-hour audio buffer in memory is undesirable, use the chunked recording API. The plugin opens a fresh native recorder every `chunkIntervalMs` milliseconds, emits the captured audio as an `audioChunk` event, and immediately starts a new recorder. Each chunk is a **standalone, decodable audio file** — you can upload or transcribe chunks individually as they arrive.
+
+```typescript
+import { VoiceRecorder, type AudioChunk, type PluginListenerHandle } from 'capacitor-voice-recorder';
+
+let listener: PluginListenerHandle | undefined;
+
+async function startMeeting() {
+  // Register the listener BEFORE starting so the first chunk isn't missed.
+  listener = await VoiceRecorder.addListener('audioChunk', (chunk: AudioChunk) => {
+    const { recordDataBase64, msDuration, mimeType, chunkIndex, isFinalChunk } = chunk;
+    // Upload the chunk, decode it, feed it to a transcription service, etc.
+    console.log(`chunk ${chunkIndex} (${msDuration}ms, ${mimeType}), final=${isFinalChunk}`);
+  });
+
+  await VoiceRecorder.startChunkedRecording({ chunkIntervalMs: 5 * 60 * 1000 }); // 5 min chunks
+}
+
+async function endMeeting() {
+  await VoiceRecorder.stopChunkedRecording(); // emits final chunk (isFinalChunk: true) before resolving
+  await listener?.remove();
+}
+```
+
+#### Chunk boundary gap
+
+Because each chunk uses a fresh native recorder, there is a brief gap between chunks (~10–50 ms native vs. 200–500 ms if you did stop-restart from JS). This is practically inaudible for transcription use cases but not zero. If you need gapless audio, merge chunks server-side or use `startRecording` with a single in-memory buffer.
+
+#### Interruptions (iOS/Android)
+
+When a phone call interrupts a chunked recording:
+1. The plugin stops the current recorder.
+2. The audio captured so far is emitted as a non-final chunk (so it isn't lost).
+3. The plugin transitions to `INTERRUPTED` state and fires `voiceRecordingInterrupted`.
+4. When the interruption ends, `voiceRecordingInterruptionEnded` fires. Call `resumeChunkedRecording()` to continue (a new native recorder is created and the `chunkIndex` continues from where it left off).
+
+#### Differences from `startRecording`
+
+| Feature                   | `startRecording`                                       | `startChunkedRecording`                                |
+|---------------------------|--------------------------------------------------------|--------------------------------------------------------|
+| Output                    | Single file returned when `stopRecording()` is called  | Stream of `audioChunk` events                          |
+| Memory use                | Grows linearly with recording duration                 | Bounded (only the current chunk is held in memory)     |
+| Chunk standalone?         | N/A                                                    | Yes — each chunk decodes independently                 |
+| Recommended for           | Short clips (voice notes, snippets)                    | Long recordings (meetings, lectures, podcasts)         |
 
 ## Donation
 

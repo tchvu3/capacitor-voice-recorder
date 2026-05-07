@@ -12,4 +12,8 @@ CAP_PLUGIN(VoiceRecorder, "VoiceRecorder",
            CAP_PLUGIN_METHOD(pauseRecording, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(resumeRecording, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(getCurrentStatus, CAPPluginReturnPromise);
+           CAP_PLUGIN_METHOD(startChunkedRecording, CAPPluginReturnPromise);
+           CAP_PLUGIN_METHOD(stopChunkedRecording, CAPPluginReturnPromise);
+           CAP_PLUGIN_METHOD(pauseChunkedRecording, CAPPluginReturnPromise);
+           CAP_PLUGIN_METHOD(resumeChunkedRecording, CAPPluginReturnPromise);
 )
